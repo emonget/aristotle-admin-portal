@@ -77,17 +77,17 @@ export function DataTable({ tableName }: DataTableProps) {
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg overflow-hidden">
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       {/* Header */}
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-200 flex justify-between items-center">
+      <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600 flex justify-between items-center">
         <div>
-          <h3 className="font-semibold text-gray-900">Database Records</h3>
-          <p className="text-sm text-gray-600">Table: <code className="bg-gray-200 px-2 py-1 rounded">{tableName}</code></p>
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100">Database Records</h3>
+          <p className="text-sm text-gray-600 dark:text-gray-400">Table: <code className="bg-gray-200 dark:bg-gray-600 px-2 py-1 rounded">{tableName}</code></p>
         </div>
         <div className="flex items-center space-x-3">
           <div className="flex items-center space-x-2">
             <div className={`w-2 h-2 rounded-full ${connectionStatus === 'connected' ? 'bg-green-500' : 'bg-yellow-500'}`}></div>
-            <span className="text-sm text-gray-600 capitalize">{connectionStatus}</span>
+            <span className="text-sm text-gray-600 dark:text-gray-400 capitalize">{connectionStatus}</span>
           </div>
           <button
             onClick={handleRefresh}
@@ -127,8 +127,8 @@ export function DataTable({ tableName }: DataTableProps) {
       {result.data && !result.isLoading && !result.error && (
         <>
           {/* Table Stats */}
-          <div className="px-6 py-3 bg-gray-50 border-b border-gray-200">
-            <p className="text-sm text-gray-600">{result.data.length} records found</p>
+          <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">{result.data.length} records found</p>
           </div>
 
           {/* Table Content */}
@@ -143,23 +143,23 @@ export function DataTable({ tableName }: DataTableProps) {
               </div>
             ) : (
               <table className="w-full">
-                <thead className="bg-gray-50 sticky top-0">
+                <thead className="bg-gray-50 dark:bg-gray-700 sticky top-0">
                   <tr>
                     {columns.map((column) => (
                       <th
                         key={column}
-                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                        className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider"
                       >
                         {column}
                       </th>
                     ))}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
                   {result.data.map((record: DatabaseRecord, index) => (
-                    <tr key={record.id || index} className="hover:bg-gray-50">
+                    <tr key={record.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       {columns.map((column) => (
-                        <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                           <div className="max-w-xs overflow-hidden">
                             <span className="truncate">
                               {renderCellValue(record[column])}

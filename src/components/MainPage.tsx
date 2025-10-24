@@ -35,21 +35,23 @@ export function MainPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6 h-full">
-      {/* Movies Column */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden flex-1 max-h-full">
-        <MoviesList
-          movies={movies}
-          isLoading={isLoading}
-          error={error}
-          onMovieSelect={handleMovieSelect}
-          selectedMovieId={selectedMovie?.ems_id as string}
-        />
-      </div>
+    <div className="h-full relative">
+      <div className="flex flex-col lg:flex-row gap-6 h-full">
+        {/* Movies Column */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden flex-1 max-h-full">
+          <MoviesList
+            movies={movies}
+            isLoading={isLoading}
+            error={error}
+            onMovieSelect={handleMovieSelect}
+            selectedMovieId={selectedMovie?.ems_id as string}
+          />
+        </div>
 
-      {/* Reviews Column */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden lg:flex-1 max-h-full">
-        <ReviewsList selectedMovie={selectedMovie} />
+        {/* Reviews Column */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden lg:flex-1 max-h-full">
+          <ReviewsList selectedMovie={selectedMovie} />
+        </div>
       </div>
     </div>
   )

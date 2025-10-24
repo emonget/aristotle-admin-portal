@@ -89,12 +89,12 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 bg-gray-50 border-b border-gray-200">
-        <h3 className="font-semibold text-gray-900 mb-2">
+      <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
           Reviews {selectedMovie ? `for ${(selectedMovie.data as any)?.title || 'Selected Movie'}` : ''}
         </h3>
         {selectedMovie && (
-          <p className="text-sm text-gray-600 mb-2">
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
             {selectedMovie?.ems_id}
           </p>
         )}
@@ -135,7 +135,7 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
                   <p>No reviews found for this movie</p>
                 </div>
               ) : (
-                <div className="divide-y divide-gray-200">
+                <div className="divide-y divide-gray-200 dark:divide-gray-600">
                   {reviews.map((review) => {
                     const reviewData = review.data as any
                     const sourceUrl = getSourceUrl(review)
@@ -145,28 +145,28 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
                     return (
                       <div
                         key={review.review_id}
-                        className="px-6 py-4 hover:bg-gray-50 cursor-pointer"
+                        className="px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer"
                         onClick={() => handleReviewClick(review)}
                       >
                         <div className="flex items-center space-x-3">
                           {isTopCritic && (
-                            <span className="text-yellow-500 text-lg" title="Top Critic">☆</span>
+                            <span className="text-yellow-500 dark:text-yellow-400 text-lg" title="Top Critic">☆</span>
                           )}
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2 mb-1">
-                              <div className="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                              <div className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-medium">
                                 {domain}
                               </div>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
                                 ID: {review.review_id}
                               </span>
                             </div>
                             <div className="flex items-center space-x-2">
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
                                 on {formatFetchDate(review.fetched_at)}
                               </span>
                               {reviewData?.criticName && (
-                                <span className="text-xs text-gray-500">
+                                <span className="text-xs text-gray-500 dark:text-gray-400">
                                   by {reviewData.criticName}
                                 </span>
                               )}
@@ -185,8 +185,8 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
 
       {/* Footer stats */}
       {selectedMovie && !isLoading && !error && (
-        <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
-          <p className="text-sm text-gray-600">
+        <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+          <p className="text-sm text-gray-600 dark:text-gray-400">
             {reviews.length} review{reviews.length !== 1 ? 's' : ''} found
             {reviews.some(r => (r.data as any)?.isTopCritic) && (
               <span className="ml-2">
