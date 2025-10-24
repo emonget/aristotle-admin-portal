@@ -35,9 +35,9 @@ export function MainPage() {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row gap-6">
+    <div className="flex flex-col lg:flex-row gap-6 h-full">
       {/* Movies Column */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden flex-1">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden flex-1 max-h-full">
         <MoviesList
           movies={movies}
           isLoading={isLoading}
@@ -48,7 +48,7 @@ export function MainPage() {
       </div>
 
       {/* Reviews Column */}
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden lg:flex-1">
+      <div className="bg-white rounded-lg shadow-lg overflow-hidden lg:flex-1 max-h-full">
         <ReviewsList selectedMovie={selectedMovie} />
       </div>
     </div>

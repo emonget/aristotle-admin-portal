@@ -12,11 +12,9 @@ interface MoviesListProps {
 
 export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSelect, isLoading, error }: MoviesListProps) {
   const [searchTerm, setSearchTerm] = useState('')
-  const [currentPage, setCurrentPage] = useState(1)
   const [movies, setMovies] = useState<DatabaseRecord[]>(externalMovies || [])
   const [internalLoading, setInternalLoading] = useState(isLoading !== undefined ? false : true)
   const [reviewsCount, setReviewsCount] = useState<{ [key: string]: number }>({})
-  const itemsPerPage = 10
 
   const actualLoading = isLoading !== undefined ? isLoading : internalLoading
 
@@ -77,17 +75,7 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
     )
   }, [movies, searchTerm])
 
-  // Paginate filtered movies
-  const paginatedMovies = useMemo(() => {
-    const startIndex = (currentPage - 1) * itemsPerPage
-    return filteredMovies.slice(startIndex, startIndex + itemsPerPage)
-  }, [filteredMovies, currentPage])
-
-  const totalPages = Math.ceil(filteredMovies.length / itemsPerPage)
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(Math.max(1, Math.min(page, totalPages)))
-  }
+  const displayedMovies = filteredMovies
 
   const handleMovieClick = (movie: DatabaseRecord) => {
     onMovieSelect?.(movie)
@@ -129,7 +117,6 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value)
-              setCurrentPage(1) // Reset to first page on search
             }}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           />
@@ -143,78 +130,59 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
             <p>{searchTerm ? 'No movies found matching your search.' : 'No movies available.'}</p>
           </div>
         ) : (
-          <>
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50 sticky top-0">
-                <tr>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Title
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    EMS ID
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Review Count
-                  </th>
-                  <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Fetch Date
-                  </th>
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50 sticky top-0">
+              <tr>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Title
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  EMS ID
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Review Count
+                </th>
+                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Fetch Date
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {displayedMovies.map((movie) => (
+                <tr
+                  key={movie.ems_id as string}
+                  onClick={() => handleMovieClick(movie)}
+                  className={`cursor-pointer hover:bg-gray-50 ${
+                    selectedMovieId === movie.ems_id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
+                  }`}
+                >
+                  <td className="px-4 py-3 text-sm font-medium text-gray-900 max-w-xs truncate">
+                    <div title={movie.title as string}>
+                      {movie.title as string}
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-mono">
+                    {(movie.ems_id as string)?.slice(-8)}...
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                    {reviewsCount[movie.ems_id as string] || 0}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
+                    {formatDate(movie.fetched_at as string)}
+                  </td>
                 </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {paginatedMovies.map((movie) => (
-                  <tr
-                    key={movie.ems_id as string}
-                    onClick={() => handleMovieClick(movie)}
-                    className={`cursor-pointer hover:bg-gray-50 ${
-                      selectedMovieId === movie.ems_id ? 'bg-blue-50 border-l-4 border-l-blue-500' : ''
-                    }`}
-                  >
-                    <td className="px-4 py-3 text-sm font-medium text-gray-900 max-w-xs truncate">
-                      <div title={movie.title as string}>
-                        {movie.title as string}
-                      </div>
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 font-mono">
-                      {(movie.ems_id as string)?.slice(-8)}...
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
-                      {reviewsCount[movie.ems_id as string] || 0}
-                    </td>
-                    <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                      {formatDate(movie.fetched_at as string)}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="px-4 py-3 border-t border-gray-200 flex items-center justify-between">
-                <div className="text-sm text-gray-600">
-                  Page {currentPage} of {totalPages} ({filteredMovies.length} total movies)
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => handlePageChange(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Previous
-                  </button>
-                  <button
-                    onClick={() => handlePageChange(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="px-3 py-1 text-sm border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    Next
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
+              ))}
+            </tbody>
+          </table>
         )}
+      </div>
+
+      {/* Footer stats */}
+      <div className="px-6 py-3 bg-gray-50 border-t border-gray-200">
+        <p className="text-sm text-gray-600">
+          {movies.length} {movies.length === 1 ? 'movie' : 'movies'} • {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0)} {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0) === 1 ? 'review' : 'reviews'} total
+          {searchTerm && ` (showing ${filteredMovies.length} filtered)`}
+        </p>
       </div>
     </div>
   )

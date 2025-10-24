@@ -109,28 +109,3 @@ export async function getTableStructure(tableName: string): Promise<string[]> {
     return ['id', 'created_at', 'updated_at']
   }
 }
-
-/**
- * Test database connection
- */
-export async function testConnection(): Promise<QueryResult> {
-  try {
-    const { data, error } = await supabase
-      .from('_health_check')
-      .select('*')
-      .limit(1)
-
-    // Most tables won't have _health_check, so this is mainly to test connection
-    return {
-      data: [{ status: 'connected' }],
-      error: error ? new Error('Connection failed') : null,
-      isLoading: false,
-    }
-  } catch (error) {
-    return {
-      data: null,
-      error: error as Error,
-      isLoading: false,
-    }
-  }
-}
