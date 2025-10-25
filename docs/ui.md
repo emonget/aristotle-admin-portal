@@ -1,11 +1,25 @@
 # UI Proposal
 
-## Overview
-
-Views/Screens:
+## Nav-menu
+SPA routing to toggle between following Views/Screens :
 - [Movies and reviews](#main-view)
 - [Workflows monitoring](#workflows-monitoring-view)
-- [Reporting & stats]
+- [Reporting & stats](#reportinganalytics-view)
+
+**Suggested layout** 
+
+Icon before View/Screen title customized depending on selected view (camera clip for Movies and reviews, Chart for stats, ...). 
+When user click nav menu icon, it will show dropdown populated with other view name, to select another view. 
+For unimplemented views, show placeholder with view title and empty content.
+
+**Alternative layout**
+3 icons for each views at top left corner, with current view highlighted
+
+```
+
+```
+
+
 
 ## Movies and reviews view
 ### Overview
@@ -110,7 +124,7 @@ Reviews for selected movie
 
 ```
 +--------------------------------------------------------------------------------+
-|  PAGE TITLE                                                                    |
+|  |NAVMENU| PAGE TITLE                                                          |
 +---------------------------------------+----------------------------------------+
 | +-----------------------------------+ | +------------------------------------+ |
 | | MOVIES                            | | | REVIEWS                            | |
@@ -142,10 +156,12 @@ Reviews for selected movie
 ## Workflows monitoring view
 
 ### Overview
+Dashboard view for monitoring data retrieval workflows
+
 **Components**
-- Movies workflow bar chart
-- Reviews workflow bar chart
-- Worflow Details panel
+- [Movies workflow bar chart](#movies-bar-chart)
+- [Reviews workflow bar chart](#reviews-bar-chart)
+- [Worflow Details panel](#workflows-monitoring-view)
 
 **Requirements**
 - See all movie retrieval workflows, and associated movies 

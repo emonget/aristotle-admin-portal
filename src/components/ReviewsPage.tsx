@@ -4,7 +4,7 @@ import { ReviewsList } from './ReviewsList'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
-export function MainPage() {
+export function ReviewsPage() {
   const [movies, setMovies] = useState<DatabaseRecord[]>([])
   const [selectedMovie, setSelectedMovie] = useState<DatabaseRecord | null>(null)
   const [isLoading, setIsLoading] = useState(true)
