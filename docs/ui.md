@@ -1,94 +1,234 @@
-# UI Layout Visualizations
+# UI Proposal
 
-## Stats Page - Review Sources Analytics
+## Overview
 
-### Page Purpose
-The Stats page provides analytics on review sources based on URL domains, helping administrators understand which review sources have the highest count of published reviews. This addresses the specific feature: "stats: extract all reviews unique sources (based on review url domain) and associated reviews count."
+Views/Screens:
+- [Movies and reviews](#main-view)
+- [Workflows monitoring](#workflows-monitoring-view)
+- [Reporting & stats]
 
-### Key Features
-- **Visual Analytics**: Bar chart displaying review counts by source domain
-- **Data Table**: Detailed breakdown with sortable/filterable source list
-- **Time Range Filtering**: Filter analytics by date ranges
-- **Export Options**: Export chart data or raw analytics to CSV/JSON
+## Movies and reviews view
+### Overview
 
-### Page Layout
+**Components**
+- [Movie timeline](#movies-timeline-top) (***proposed feat***)
+- [Movie panel](#movies-panel-left-side)
+- [Review panel](#reviews-panel-right-side)
+
+### Movies timeline (top)
+
+***TODO***
+
+### Movies panel (left side)
+
+**Description**
+
+ Browse all movies 
+   - Reference for data model: [movies-table](/docs/data-model.md#movies-table)
+   - Data table with columns: Title, EMS ID, Review Count, Fetch Date
+   - Search/filter by title or EMS ID
+   - Click movie to select and populate reviews panel
+
+**List preview**
 
 ```
-+---------------------------------------------------------------------------------+
++------------------------------------------+
+| MOVIES                                   |
+| [Search: _________________]              |
++------------------------------------------+
+| Title          | ID   | Rev Cnt | Date |^|
+|----------------------------------------| |
+| Movie 1        | 001  | 5       |01/15 | |
+|----------------------------------------| |
+| Movie 2        | 002  | 3       |02/20 | |
+|----------------------------------------| |
+| Movie 3        | 003  | 8       |03/10 | |
+|----------------------------------------| |
+| Movie 4        | 004  | 12      |04/05 | |
+|----------------------------------------| |
+| Movie 5        | 005  | 7       |05/12 | |
+|-----------------------------------------v|
++------------------------------------------+
+| Movies: 150  |  Total Reviews: 1,234     |
++------------------------------------------+
+```
+
+### Reviews panel (right side)
+
+**Description**
+
+Reviews for selected movie
+   - Reference for data model: [reviews-table](/docs/data-model.md#reviews-table) 
+   - List showing reviews for the currently selected movie
+   - Displays: Review ID, Source URL (domain only), Fetch Date, Critic Name (if available)
+   - Click review to open the source URL in a new browser tab (no modal)
+   - Top critic reviews originates from `isTopCritic` flag defined in [reviews table](/docs/data-model.md#reviews-table)
+   - Mark top critic reviews with single star (☆) 
+   - List top critic reviews first
+
+**Item preview**
+
+```
+| |--------------------------------------| |
+| | critics.com            ID: R003      | |
+| | 03/10/2024             Bob Johnson   | |
+| +--------------------------------------+ |
+```
+
+**List preview**
+```
++------------------------------------------+
+| REVIEWS                                  |
+| Movie Title Here                         |
+| ID: 001                                  |
++------------------------------------------+
+| +--------------------------------------+^|
+| | domain.com             ID: R001      | |
+| | 01/15/2024             John Smith    | |
+| +--------------------------------------+ |
+| |--------------------------------------| |
+| | moviesite.com          ID: R002      | |
+| | 02/20/2024             Jane Doe      | |
+| +--------------------------------------+ |
+| |--------------------------------------| |
+| | critics.com            ID: R003      | |
+| | 03/10/2024             Bob Johnson   | |
+| +--------------------------------------+ |
+| |--------------------------------------| |
+| | reviews.net            ID: R004      | |
+| | 04/05/2024             Alice Brown   | |
+| +--------------------------------------+v|
++------------------------------------------+
+| Reviews: 12  |  Top Critics: 3          |
++------------------------------------------+
+```
+
+
+### View layout 
+
+**Suggested view laoyout**
+
+```
++--------------------------------------------------------------------------------+
+|  PAGE TITLE                                                                    |
++---------------------------------------+----------------------------------------+
+| +-----------------------------------+ | +------------------------------------+ |
+| | MOVIES                            | | | REVIEWS                            | |
+| | [Search: __________________]      | | | Selected movie title               | |
+| |                                   | | | ID: 001                            | |
+| +-----------------------------------+ | +------------------------------------+ |
+| | Title          |ID  |Rv |Date   |^| | +----------------------------------+^| |
+| | Movie 1        |001 |5  |01/15  | | | | domain.com            ID: R001   | | |
+| |---------------------------------| | | | 01/15/2024            John Smith | | |
+| | Movie 2        |002 |3  |02/20  | | | |----------------------------------| | |
+| |---------------------------------| | | | moviesite.com         ID: R002   | | |
+| | Movie 3        |003 |8  |03/10  | | | | 02/20/2024            Jane Doe   | | |
+| |---------------------------------| | | |----------------------------------| | |
+| | Movie 4        |004 |12 |04/05  | | | | critics.com           ID: R003   | | |
+| |---------------------------------| | | | 03/10/2024            Bob Johnson| | |
+| | Movie 5        |003 |8  |03/10  | | | |----------------------------------| | |
+| |---------------------------------| | | | reviews.net           ID: R004   | | |
+| | Movie 6        |003 |8  |03/10  | | | | 04/05/2024            Alice Brown| | |
+| |---------------------------------| | | +----------------------------------+ | |
+| | Movie 7        |004 |12 |04/05  |v| | | nytimes.com           ID: R005   |v| |
+| +-----------------------------------+ | +------------------------------------+ |
+| | Movies: 150  | Total Reviews: 1K  | | | Reviews: 12  |  Top Critics: 3     | |
+| +-----------------------------------+ | +------------------------------------+ |
++---------------------------------------+----------------------------------------+
+
+```
+
+
+## Workflows monitoring view
+
+### Overview
+**Components**
+- Movies workflow bar chart
+- Reviews workflow bar chart
+- Worflow Details panel
+
+**Requirements**
+- See all movie retrieval workflows, and associated movies 
+- See all reviews retrieval workflows and associated reviews
+
+**Features**
+- Movies bar chart showing total number of movies in DB and added movies count at each movie workflow execution
+- Reviews bar chart showing total number of reviews in DB and added reviews count at each review workflow execution
+- Clicking a bar in chart will show workflow details
+
+### Movies bar chart
+Clicking a bar in the chart will show:
+- movie workflow details: run date, time
+- all movies retrieved during workflow execution
+
+**Suggested chart**
+
+```
+```
+
+### Reviews bar chart
+Clicking a bar in the chart will show:
+- worflow details:
+- all reviews retrieved during worflow execution as
+
+**Suggested chart**
+```
+```
+
+### Worflow details panel
+- movie or review workflow details depending on workflow type
+- worflow items: movies or reviews depending on workflow type
+
+**Suggested panel laoyout**
+```
+```
+
+### View layout
+
+**Suggested view laoyout**
+```
+```
+
+
+## Reporting/Analytics view
+
+### Overview
+
+**Purpose**
+
+Provides analytics on review sources based on URL domains, helping administrators understand which review sources have the highest count of published reviews. This addresses the specific feature: "stats: extract all reviews unique sources (based on review url domain) and associated reviews count."
+
+**Components**
+- [Review sources analytics panel](#review-sources-analytics-panel)
+
+### Review sources analytics panel
+**Suggested panel layout**
+```
++--------------------------------------------------------------------------------+
 | Stats > Review Sources Analytics                                               |
-+---------------------------------------------------------------------------------+
-|                                                                                 |
-| +----------------------------- Analytics Chart ---------------------------------+ |
++--------------------------------------------------------------------------------+
+|                                                                                |
+| +----------------------------- Analytics Chart ------------------------------+ |
 | |                        Review Sources by Count                             | |
-| |                          +------------------------+                         | |
-| |                ████████ | Variety.com    2,847   |                         | |
-| |          ██████████████ | RT.com         2,123   |                         | |
-| |    ████████████████████ | The Guardian   1,892   |                         | |
-| | ███████████████████████ | NYT.com        1,756   |                         | |
-| |                         | BBC.com        1,543   |                         | |
-| |                         | LA Times       1,298   |                         | |
-| |                         +------------------------+                         | |
-| +---------------------------------------------------------------------------+ |
-|                                                                                 |
-| +----------------------- Detailed Breakdown Table ----------------------------+ |
-| | +-------------------------------------------------------------------------+ | |
-| | | Source Domain     | Review Count | % of Total                       | | |
-| | |-------------------+--------------+------------+-------------------------| | |
-| | | variety.com       | 2,847        | 18.2%      | 2024-10-23 14:32       | | |
-| | | rottentomatoes.com| 2,123        | 13.5%      | 2024-10-23 11:15       | | |
-| | | theguardian.com   | 1,892        | 12.1%      | 2024-10-23 09:43       | | |
-| | | nytimes.com       | 1,756        | 11.2%      | 2024-10-23 08:22       | | |
-| | | bbc.com           | 1,543        | 9.8%       | 2024-10-22 21:07       | | |
-| | | latimes.com       | 1,298        | 8.3%       | 2024-10-22 18:45       | | |
-| | | washingtonpost.com| 1,056        | 6.7%       | 2024-10-22 16:33       | | |
-| | | hollywoodreporter.| 987          | 6.3%       | 2024-10-22 14:12       | | |
-| | | ...               | ...          | ...        | ...                     | | |
-| | +-------------------------------------------------------------------------+ | |
-| |                                                               [◄ Prev] [Next ▶] | |
-| +---------------------------------------------------------------------------+ |
-|                                                                                 |
-| +--------------------------- Quick Stats -------------------------------------+ |
-| | Total Sources: 47                            | Total Reviews: 15,697      | |
-| +---------------------------------------------------------------------------+ |
-+---------------------------------------------------------------------------------+
+| |                                                                            | |
+| | Variety.com    2,847 (18.2%) ██████████████████████████████                | |
+| | RT.com         2,123 (13.5%) ███████████████████████████                   | |
+| | The Guardian   1,892 (12.1%) █████████████████████████                     | |
+| | NYT.com        1,756 (11.2%) ████████████████████████                      | |
+| | BBC.com        1,543 (9.8%) ███████████████████████                        | |
+| | LA Times       1,298 (8.3%) █████████████████████                          | |
+| |         Show More ▼                                                        | |
+| |                                                                            | |
+| +----------------------------------------------------------------------------+ |
+|                                                                                |
+| +--------------------------- Quick Stats -----------------------------------+  |
+| | Total Sources: 47                            | Total Reviews: 15,697      |  |
+| +---------------------------------------------------------------------------+  |
++--------------------------------------------------------------------------------+
 ```
 
-### Component Breakdown
+### View layout
+**Suggested view laoyout**
+```
 
-1. **Filter Controls Section**
-   - Date range picker for limiting analytics to specific time periods
-   - Source domain text filter for narrowing down the view
-   - Sort dropdown with options: Review Count, Source Name, Last Updated
-
-2. **Analytics Chart Section**
-   - Horizontal bar chart showing top sources by review count
-   - Interactive tooltips showing exact counts on hover
-   - Click bars to filter the table below to that source
-
-3. **Detailed Breakdown Table**
-   - Sortable columns: Source Domain, Review Count, Percentage, Last Review Date
-   - Pagination for handling large datasets
-   - Row highlighting and click-to-drill-down functionality
-
-4. **Export Options Bar**
-   - Multiple export formats: PNG/SVG for charts, CSV/Excel for data, JSON for API consumption
-   - One-click export buttons with loading states
-
-5. **Quick Stats Dashboard**
-   - Summary metrics at a glance
-   - Live update timestamps
-   - Trend indicators showing growth/decline
-
-### Technical Implementation Notes
-- Chart powered by Chart.js or similar library
-- Table uses sortable, paginated DataTable component
-- Data fetched from reviews table aggregated by URL domain extraction
-- Real-time updates every 5 minutes
-- Export functionality generates downloadable files on-demand
-
-### User Flow
-1. User lands on Stats page → sees overview chart and stats
-2. Applies date/source filters → chart/table update in real-time
-3. Clicks chart bars → table filters to selected source
-4. Sorts table by different metrics → data reorders instantly
-5. Exports needed data → downloads generated in background
+```
