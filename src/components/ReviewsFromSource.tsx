@@ -129,13 +129,8 @@ export function ReviewsFromSource({ selectedSource }: ReviewsFromSourceProps) {
       {/* Header */}
       <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          {selectedSource ? `Reviews from ${selectedSource.publicationName || selectedSource.domain}` : 'Select a source'}
+          {selectedSource ? `Reviews from ${selectedSource.domain}` : 'Select a source'}
         </h3>
-        {selectedSource && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {selectedSource.domain}
-          </p>
-        )}
       </div>
 
       {/* Content */}

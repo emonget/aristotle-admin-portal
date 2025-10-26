@@ -93,11 +93,6 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
         <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
           Reviews {selectedMovie ? `for ${(selectedMovie.data as any)?.title || 'Selected Movie'}` : ''}
         </h3>
-        {selectedMovie && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            {selectedMovie?.ems_id}
-          </p>
-        )}
       </div>
 
       {/* Content */}

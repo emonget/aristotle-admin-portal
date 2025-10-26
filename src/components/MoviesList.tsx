@@ -103,27 +103,27 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
     )
   }
 
+  const showHeader = false // Hide header in tabbed interface
+
   return (
     <div className="h-full flex flex-col">
-      {/* Header */}
-      <div className="px-6 py-4">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-4">Movies</h3>
-
+      {/* Header - removed "Movies" title, keeping only search */}
+      <div className="px-6 pt-0 pb-2">
         {/* Search */}
-        <div className="mb-4">
-          <input
-            type="text"
-            placeholder="Search by title or EMS ID..."
-            value={searchTerm}
-            onChange={(e) => {
-              setSearchTerm(e.target.value)
-            }}
-            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-          />
-        </div>
+        <div className="mb-2">
+        <input
+          type="text"
+          placeholder="Search by title or EMS ID..."
+          value={searchTerm}
+          onChange={(e) => {
+            setSearchTerm(e.target.value)
+          }}
+          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+        />
       </div>
+    </div>
 
-      {/* Table */}
+    {/* Table */}
       <div className="flex-1 overflow-auto">
         {filteredMovies.length === 0 ? (
           <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
@@ -178,12 +178,12 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
       </div>
 
       {/* Footer stats */}
-      <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+      {/* <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {movies.length} {movies.length === 1 ? 'movie' : 'movies'} • {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0)} {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0) === 1 ? 'review' : 'reviews'} total
           {searchTerm && ` (showing ${filteredMovies.length} filtered)`}
         </p>
-      </div>
+      </div>*/}
     </div>
   )
 }
