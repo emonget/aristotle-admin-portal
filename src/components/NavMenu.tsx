@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Clapperboard, Settings, FileText, BarChart3, ChevronDown } from 'lucide-react'
 
-export function NavMenu({ onTitleChange }: { onTitleChange: (title: string) => void }) {
+export function NavMenu() {
   const navigate = useNavigate()
   const location = useLocation()
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -16,10 +16,6 @@ export function NavMenu({ onTitleChange }: { onTitleChange: (title: string) => v
 
   const currentView = views.find(view => view.path === location.pathname) || views[0]
 
-  // Update parent component title when view changes
-  React.useEffect(() => {
-    onTitleChange(currentView.title)
-  }, [location.pathname, currentView.title, onTitleChange])
 
   return (
     <div className="relative">
@@ -30,6 +26,7 @@ export function NavMenu({ onTitleChange }: { onTitleChange: (title: string) => v
         aria-label="Toggle navigation menu"
       >
         <currentView.icon className="w-5 h-5" />
+        <span className="text-sm font-medium">{currentView.name}</span>
         <ChevronDown className={`w-4 h-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
       </button>
 

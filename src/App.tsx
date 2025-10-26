@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './App.css'
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { ReviewsPage } from './components/ReviewsPage'
@@ -9,20 +9,17 @@ import { NavMenu } from './components/NavMenu'
 import { ThemeProvider } from './contexts/theme'
 
 function App() {
-  const [pageTitle, setPageTitle] = useState('Movie & Reviews')
 
   return (
     <ThemeProvider>
       <div className="h-screen bg-gray-100 dark:bg-gray-900 flex flex-col">
         <div className="flex-shrink-0 p-6">
           {/* Header */}
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex items-center justify-between">
-            <div className="flex items-center gap-6">
-              <NavMenu onTitleChange={setPageTitle} />
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                {pageTitle}
-              </h1>
-            </div>
+          <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex items-center justify-between">
+            <NavMenu />
+            <h1 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-900 dark:text-gray-100">
+              Aristotle Admin Portal
+            </h1>
             <ThemeToggle />
           </div>
         </div>
