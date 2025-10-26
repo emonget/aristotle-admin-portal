@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
+import type { DatabaseRecord } from '@/types/database'
+import { ReviewsFromSource } from './ReviewsFromSource'
 
 interface ReviewSource {
   domain: string
@@ -13,6 +15,7 @@ export function AnalyticsPage() {
   const [error, setError] = useState<string | null>(null)
   const [totalUniqueSources, setTotalUniqueSources] = useState(0)
   const [totalReviewCount, setTotalReviewCount] = useState(0)
+  const [selectedSource, setSelectedSource] = useState<ReviewSource | null>(null)
 
   const extractDomain = (url: string) => {
     try {
@@ -89,19 +92,21 @@ export function AnalyticsPage() {
 
 
   return (
-    <div className="h-full bg-white dark:bg-gray-800 rounded-lg shadow flex flex-col">
-      {/* Header - Fixed */}
-      <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-        <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
-          Review Sources Analytics
-        </h2>
-        <p className="text-sm text-gray-600 dark:text-gray-400">
-          Analysis of review sources by URL domains
-        </p>
-      </div>
+    <div className="h-full bg-white dark:bg-gray-800 rounded-lg shadow flex">
+      {/* Analytics Panel - Left Half */}
+      <div className="flex-1 flex flex-col border-r border-gray-200 dark:border-gray-600">
+        {/* Header - Fixed */}
+        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100 mb-1">
+            Review Sources Analytics
+          </h2>
+          <p className="text-sm text-gray-600 dark:text-gray-400">
+            Analysis of review sources by URL domains
+          </p>
+        </div>
 
-      {/* Content - Scrollable */}
-      <div className="flex-1 overflow-auto p-6">
+        {/* Content - Scrollable */}
+        <div className="flex-1 overflow-auto p-6">
         {loading && (
           <div className="flex items-center justify-center h-full">
             <div className="text-center">
@@ -133,13 +138,25 @@ export function AnalyticsPage() {
         {!loading && !error && sources.length > 0 && (
           <div className="space-y-3">
             {sources.map((source: ReviewSource, index: number) => (
-              <div key={source.domain} className="flex items-center space-x-4">
+              <div
+                key={source.domain}
+                className={`flex items-center space-x-4 p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
+                  selectedSource?.domain === source.domain
+                    ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800'
+                    : 'hover:bg-gray-50 dark:hover:bg-gray-700'
+                }`}
+                onClick={() => setSelectedSource(source)}
+              >
                 <div className="w-8 text-sm font-mono text-gray-500 flex-shrink-0">
                   {index + 1}.
                 </div>
                 <div className="flex-1">
                   <div className="flex justify-between items-center mb-1">
-                    <span className="font-medium text-gray-900 dark:text-gray-100">
+                    <span className={`font-medium ${
+                      selectedSource?.domain === source.domain
+                        ? 'text-blue-700 dark:text-blue-300'
+                        : 'text-gray-900 dark:text-gray-100'
+                    }`}>
                       {source.publicationName || source.domain}
                     </span>
                     <span className="text-sm text-gray-500">
@@ -151,7 +168,11 @@ export function AnalyticsPage() {
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                     <div
-                      className="bg-blue-600 h-2 rounded-full transition-all duration-500"
+                      className={`h-2 rounded-full transition-all duration-500 ${
+                        selectedSource?.domain === source.domain
+                          ? 'bg-blue-700'
+                          : 'bg-blue-600'
+                      }`}
                       style={{ width: `${(source.count / maxCount) * 100}%` }}
                     />
                   </div>
@@ -160,16 +181,22 @@ export function AnalyticsPage() {
             ))}
           </div>
         )}
+        </div>
+
+        {/* Footer - Fixed */}
+        {!loading && !error && sources.length === 0 && (
+          <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Total sources: {totalUniqueSources} • Total reviews: {totalReviewCount}
+            </p>
+          </div>
+        )}
       </div>
 
-      {/* Footer - Fixed */}
-      {!loading && !error && (
-        <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            Total sources: {totalUniqueSources} • Total reviews: {totalReviewCount}
-          </p>
-        </div>
-      )}
+      {/* Reviews Panel - Right Half */}
+      <div className="flex-1">
+        <ReviewsFromSource selectedSource={selectedSource} />
+      </div>
     </div>
   )
 }
