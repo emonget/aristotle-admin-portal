@@ -1,3 +1,4 @@
+# Data model
 ## DB Schema
 ### Workflows table
 
@@ -38,8 +39,8 @@ CREATE TABLE reviews (
 ```
 - `data` field see [review](#review-json-data)
 
-
-## movie JSON data
+## Specific fields
+### movie JSON data
 data field json structure from [movies table](#movies-table)
 ```json
 {
@@ -62,7 +63,7 @@ data field json structure from [movies table](#movies-table)
 }
 ```
 
-## review JSON data
+### review JSON data
 
 data field json structure from [review table](#reviews-table)
 

@@ -168,8 +168,8 @@ Dashboard view for monitoring data retrieval workflows
 - See all reviews retrieval workflows and associated reviews
 
 **Features**
-- Movies bar chart showing total number of movies in DB and added movies count at each movie workflow execution
-- Reviews bar chart showing total number of reviews in DB and added reviews count at each review workflow execution
+- Movies bar chart showing total number of movies in DB at each movie workflow execution (plus diff of added movies count)
+- Reviews bar chart showing total number of reviews in DB at each review workflow execution (plus diff of added reviews count)
 - Clicking a bar in chart will show workflow details
 
 ### Movies bar chart
