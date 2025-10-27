@@ -25,6 +25,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
   const [items, setItems] = useState<DatabaseRecord[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [movies, setMovies] = useState<DatabaseRecord[]>([])
 
   useEffect(() => {
     const fetchWorkflowItems = async () => {
@@ -36,6 +37,19 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
       try {
         setIsLoading(true)
         setError(null)
+
+        // First fetch movies for lookup
+        const moviesResult = await getTableData('movies', {
+          select: 'ems_id,title'
+        })
+
+        if (moviesResult.error) {
+          console.error('❌ Error fetching movies:', moviesResult.error)
+          setMovies([])
+        } else {
+          setMovies(moviesResult.data || [])
+          console.log(`🔍 Loaded ${moviesResult.data?.length || 0} movies for title lookup`)
+        }
 
         if (workflowType === 'movies') {
           // Movies workflows are straightforward - fetch directly by workflow_exec_id
@@ -54,6 +68,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           // We need to find all sub-workflows spawned by this parent and get reviews from them
 
           console.log(`🔍 Fetching reviews for parent workflow: ${selectedWorkflow.id}`)
+          console.log(`🔍 DEBUG: Selected workflow object:`, selectedWorkflow)
 
           // First, get all sub-workflow executions spawned by this parent
           const subWorkflowResult = await getTableData('workflow_executions', {
@@ -72,6 +87,11 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           const subExecIds = subWorkflows.map(sw => sw.exec_id)
 
           console.log(`🔍 Found ${subWorkflows.length} sub-workflows for parent ${selectedWorkflow.id}:`, subExecIds)
+
+          if (subWorkflows.length === 0) {
+            console.log('⚠️ No sub-workflows found for parent', selectedWorkflow.id)
+            console.log(`🔍 DEBUG: Sub-workflow query result:`, subWorkflowResult)
+          }
 
           // Fetch reviews for each sub-workflow
           const allReviews: DatabaseRecord[] = []
@@ -106,6 +126,12 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
 
     fetchWorkflowItems()
   }, [selectedWorkflow, workflowType])
+
+  // Helper function to get movie title by ems_id
+  const getMovieTitle = (movieId: string): string => {
+    const movie = movies.find(m => m.ems_id === movieId)
+    return movie?.title || (movieId ? `Movie ID: ${movieId}` : 'Unknown Movie')
+  }
 
   if (!selectedWorkflow) {
     return (
@@ -220,10 +246,17 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        <span className="font-medium">Movie:</span> {review.movie_title || 'Unknown'}
+                        <span className="font-medium">Movie:</span> {getMovieTitle(review.movie_id) || (review.data as any)?.title || 'Unknown'}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-                        <span className="font-medium">Source:</span> {review.publicationName || new URL(review.reviewUrl || review.publicationUrl || '')?.hostname || 'Unknown'}
+                        <span className="font-medium">Source:</span> {(review.data as any)?.publicationName ? (review.data as any).publicationName : ((review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl ? (() => {
+                          try {
+                            const url = (review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl;
+                            return new URL(url).hostname;
+                          } catch (e) {
+                            return url;
+                          }
+                        })() : 'Unknown')}
                       </div>
                     </div>
                     <div className="text-xs text-gray-400 dark:text-gray-500 font-mono">
