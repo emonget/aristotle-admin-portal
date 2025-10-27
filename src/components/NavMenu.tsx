@@ -9,8 +9,8 @@ export function NavMenu() {
 
   const views = [
     { path: '/reviews', name: 'Reviews', title: 'Reviews', icon: Clapperboard },
+    { path: '/workflows', name: 'Workflows', title: 'Workflows', icon: Settings },
     { path: '/analytics', name: 'Analytics', title: 'Analytics', icon: BarChart3 },
-    { path: '/workflows', name: 'Monitoring', title: 'Monitoring', icon: Settings },
     { path: '/reporting', name: 'Reporting', title: 'Reporting', icon: FileText },
   ]
 

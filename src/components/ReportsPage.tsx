@@ -1,16 +1,16 @@
-import { BarChart3 } from 'lucide-react'
+import { FileText } from 'lucide-react'
 
-export function AnalyticsPage() {
+export function ReportsPage() {
   return (
     <div className="h-full bg-white dark:bg-gray-800 rounded-lg shadow p-6">
       <div className="flex items-center justify-center h-full">
         <div className="text-center space-y-4">
-          <BarChart3 className="w-16 h-16 text-gray-400 mx-auto" />
+          <FileText className="w-16 h-16 text-blue-600 dark:text-blue-400 mx-auto" />
           <h2 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-            Analytics
+            Reports
           </h2>
           <p className="text-gray-600 dark:text-gray-400 max-w-md">
-            Analytics on review sources based on URL domains - coming soon...
+            Generated reports and analytics exports - coming soon...
           </p>
         </div>
       </div>

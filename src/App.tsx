@@ -4,6 +4,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import { ReviewsPage } from './components/ReviewsPage'
 import { WorkflowsPage } from './components/WorkflowsPage'
 import { AnalyticsPage } from './components/AnalyticsPage'
+import { ReportsPage } from './components/ReportsPage'
 import { ThemeToggle } from './components/ThemeToggle'
 import { NavMenu } from './components/NavMenu'
 import { ThemeProvider } from './contexts/theme'
@@ -31,6 +32,7 @@ function App() {
             <Route path="/reviews" element={<ReviewsPage />} />
             <Route path="/workflows" element={<WorkflowsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/reporting" element={<ReportsPage />} />
           </Routes>
         </div>
       </div>
