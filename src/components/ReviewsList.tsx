@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
@@ -33,7 +33,7 @@ export function ReviewsList({ selectedMovie }: ReviewsListProps) {
           )
 
           // Sort by isTopCritic (top critics first) then by creation date (most recent first)
-          movieReviews.sort((a, b) => {
+          movieReviews.sort((a: DatabaseRecord, b: DatabaseRecord) => {
             const aData = a.data as any
             const bData = b.data as any
 

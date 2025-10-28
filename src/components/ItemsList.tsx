@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { MoviesList } from './MoviesList'
-import { ReviewsFromSource } from './ReviewsFromSource'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 

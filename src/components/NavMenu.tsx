@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import { Clapperboard, Settings, FileText, BarChart3, ChevronDown } from 'lucide-react'
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 

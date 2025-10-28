@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
@@ -103,7 +103,6 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
     )
   }
 
-  const showHeader = false // Hide header in tabbed interface
 
   return (
     <div className="h-full flex flex-col">

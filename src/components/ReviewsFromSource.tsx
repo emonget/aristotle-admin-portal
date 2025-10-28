@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
@@ -72,7 +72,7 @@ export function ReviewsFromSource({ selectedSource }: ReviewsFromSourceProps) {
           )
 
           // Sort by isTopCritic (top critics first) then by creation date (most recent first)
-          sourceReviews.sort((a, b) => {
+          sourceReviews.sort((a: DatabaseRecord, b: DatabaseRecord) => {
             const aData = a.data as any
             const bData = b.data as any
 
@@ -171,8 +171,7 @@ export function ReviewsFromSource({ selectedSource }: ReviewsFromSourceProps) {
                 <div className="divide-y divide-gray-200 dark:divide-gray-600">
                   {reviews.map((review) => {
                     const reviewData = review.data as any
-                    const sourceUrl = getSourceUrl(review)
-                    const isTopCritic = reviewData?.isTopCritic
+                                        const isTopCritic = reviewData?.isTopCritic
 
                     return (
                       <div

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ItemsList } from './ItemsList'
 import { ViewSelector } from './ViewSelector'
 import { ReviewsList } from './ReviewsList'

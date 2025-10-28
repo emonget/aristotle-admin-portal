@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { getTableData, getTableStructure, testConnection, type QueryResult } from '@/services/database'
+import { useState, useEffect } from 'react'
+import { getTableData, getTableStructure, type QueryResult } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
 interface DataTableProps {
@@ -13,13 +13,13 @@ export function DataTable({ tableName }: DataTableProps) {
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   // Test connection on mount
-  useEffect(() => {
-    const testConn = async () => {
-      const statusResult = await testConnection()
-      setConnectionStatus(statusResult.error ? 'failed' : 'connected')
-    }
-    testConn()
-  }, [])
+  // useEffect(() => {
+  //   const testConn = async () => {
+  //     const statusResult = await testConnection()
+  //     setConnectionStatus(statusResult.error ? 'failed' : 'connected')
+  //   }
+  //   testConn()
+  // }, [])
 
   // Fetch table data and structure when tableName changes
   useEffect(() => {
@@ -156,7 +156,7 @@ export function DataTable({ tableName }: DataTableProps) {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
-                  {result.data.map((record: DatabaseRecord, index) => (
+                  {result.data.map((record: DatabaseRecord, index: number) => (
                     <tr key={record.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       {columns.map((column) => (
                         <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
