@@ -22,10 +22,10 @@ export interface DatabaseServiceOptions extends PaginationOptions {
 /**
  * Generic function to fetch data from any table
  */
-export async function getTableData(
+export async function getTableData<T = DatabaseRecord>(
   tableName: string,
   options: DatabaseServiceOptions = {}
-): Promise<QueryResult> {
+): Promise<QueryResult<T>> {
   try {
     let query = supabase
       .from(tableName)
@@ -58,7 +58,7 @@ export async function getTableData(
     }
 
     return {
-      data,
+      data: (data as unknown as T[]) ?? null,
       error: null,
       isLoading: false,
     }
@@ -67,7 +67,7 @@ export async function getTableData(
 
     return {
       data: null,
-      error: error as Error,
+      error: (error instanceof Error ? error : new Error(String(error))) as Error,
       isLoading: false,
     }
   }

@@ -86,7 +86,7 @@ export function ReviewsFromSource({ selectedSource }: ReviewsFromSourceProps) {
             return bDate - aDate
           })
 
-          setReviews(sourceReviews)
+          setReviews(sourceReviews as unknown as ReviewWithData[])
         }
       } catch (err) {
         setError('Failed to fetch reviews')
@@ -110,9 +110,9 @@ export function ReviewsFromSource({ selectedSource }: ReviewsFromSourceProps) {
   }
 
   const handleReviewClick = (review: ReviewWithData) => {
-    const url = getSourceUrl(review)
-    if (url) {
-      window.open(url, '_blank', 'noopener,noreferrer')
+    const sourceUrl = getSourceUrl(review)
+    if (sourceUrl) {
+      window.open(sourceUrl, '_blank', 'noopener,noreferrer')
     }
   }
 

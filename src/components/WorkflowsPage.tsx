@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { useMoviesWorkflowData, useReviewsWorkflowData } from '@/hooks/useWorkflowData'
 import { WorkflowViewSelector } from './WorkflowViewSelector'
 import { WorkflowList } from './WorkflowList'
@@ -85,7 +85,7 @@ export function WorkflowsPage() {
         {/* Items Column */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden lg:flex-1 max-h-full">
           <WorkflowItems
-            selectedWorkflow={selectedWorkflow}
+            selectedWorkflow={selectedWorkflow ?? undefined}
             workflowType={workflowSelector}
           />
         </div>

@@ -83,7 +83,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
             return
           }
 
-          const subWorkflows = subWorkflowResult.data as { exec_id: string }[] || []
+          const subWorkflows = (subWorkflowResult.data as unknown as { exec_id: string }[]) || []
           const subExecIds = subWorkflows.map(sw => sw.exec_id)
 
           console.log(`🔍 Found ${subWorkflows.length} sub-workflows for parent ${selectedWorkflow.id}:`, subExecIds)
@@ -172,7 +172,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
             Movies Added on {selectedWorkflow.runDate}
           </h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-            {items.length} of {selectedWorkflow.deltaMovies} movies added
+            {items.length} of {(selectedWorkflow as MoviesWorkflowExecution).deltaMovies} movies added
           </p>
         </div>
 
@@ -229,7 +229,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           Reviews Added on {selectedWorkflow.runDate}
         </h3>
         <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
-          {items.length} of {selectedWorkflow.deltaReviews} reviews added
+          {items.length} of {(selectedWorkflow as ReviewsWorkflowExecution).deltaReviews} reviews added
         </p>
       </div>
 
@@ -251,10 +251,10 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
                       <div className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                         <span className="font-medium">Source:</span> {(review.data as any)?.publicationName ? (review.data as any).publicationName : ((review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl ? (() => {
                           try {
-                            const url = (review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl;
-                            return new URL(url).hostname;
+                            const link = (review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl;
+                            return new URL(link).hostname;
                           } catch (e) {
-                            return url;
+                            return (review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl;
                           }
                         })() : 'Unknown')}
                       </div>

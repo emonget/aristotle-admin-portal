@@ -23,9 +23,12 @@ interface WorkflowListProps {
 }
 
 export function WorkflowList({ workflows, selectedWorkflowId, onWorkflowSelect, workflowType, isLoading, error }: WorkflowListProps) {
-  const totalItems = workflows.reduce((sum, workflow) => sum + (workflow.deltaMovies || workflow.deltaReviews), 0)
+  const getDelta = (w: MoviesWorkflowExecution | ReviewsWorkflowExecution): number =>
+    'deltaMovies' in w ? w.deltaMovies : (w as ReviewsWorkflowExecution).deltaReviews
+
+  const totalItems = workflows.reduce((sum, workflow) => sum + getDelta(workflow), 0)
   const totalExecutions = workflows.length
-  const maxDelta = workflows.length > 0 ? Math.max(...workflows.map(w => w.deltaMovies || w.deltaReviews)) : 1
+  const maxDelta = workflows.length > 0 ? Math.max(...workflows.map(w => getDelta(w))) : 1
 
   if (isLoading) {
     return (
@@ -108,7 +111,7 @@ export function WorkflowList({ workflows, selectedWorkflowId, onWorkflowSelect, 
                       ? 'text-blue-700 dark:text-blue-300'
                       : 'text-gray-600 dark:text-gray-400'
                   }`}>
-                    +{workflow.deltaMovies || workflow.deltaReviews} {workflowType}
+                    +{getDelta(workflow)} {workflowType}
                   </span>
                 </div>
                 <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
@@ -118,7 +121,7 @@ export function WorkflowList({ workflows, selectedWorkflowId, onWorkflowSelect, 
                         ? 'bg-blue-700'
                         : 'bg-blue-600'
                     }`}
-                    style={{ width: `${((workflow.deltaMovies || workflow.deltaReviews) / maxDelta) * 100}%` }}
+                    style={{ width: `${(getDelta(workflow) / maxDelta) * 100}%` }}
                   />
                 </div>
               </div>

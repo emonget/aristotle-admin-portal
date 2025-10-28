@@ -6,6 +6,7 @@ interface WorkflowExecutionRecord {
   workflow_id: string
   timestamp: string
   metadata?: any
+  parent_exec_id?: string | null
 }
 
 export interface MoviesWorkflowExecution {
@@ -42,7 +43,7 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
       console.log('🎬 FETCHING MOVIES WORKFLOW DATA...')
 
       // Get workflow executions for movies workflow
-      const workflowResult = await getTableData('workflow_executions', {
+      const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
         filters: { workflow_id: 'eTbtW2WLgxa6ZqXS' }, // Corrected workflow_id from debug output
         orderBy: 'timestamp',
         ascending: true
@@ -54,7 +55,7 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
         throw new Error(workflowResult.error.message || 'Failed to fetch workflow executions')
       }
 
-      const executionsData = workflowResult.data as WorkflowExecutionRecord[] || []
+      const executionsData = workflowResult.data || []
 
       if (executionsData.length === 0) {
         setExecutions([])
@@ -72,7 +73,7 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
         const runDate = new Date(exec.timestamp).toISOString().split('T')[0] // Extract date part
 
         // Count movies for this execution
-        const moviesResult = await getTableData('movies', {
+        const moviesResult = await getTableData<{ ems_id: string }>('movies', {
           filters: { workflow_exec_id: execId },
           select: 'ems_id'
         })
@@ -129,7 +130,7 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
       console.log('🔍 FETCHING REVIEWS WORKFLOW EXECUTIONS...')
 
       // Get ALL workflow executions to identify parent reviews workflows
-      const workflowResult = await getTableData('workflow_executions', {
+      const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
         orderBy: 'timestamp',
         ascending: true
       })
@@ -138,7 +139,7 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
         throw new Error(workflowResult.error.message || 'Failed to fetch workflow executions')
       }
 
-      const executionsData = workflowResult.data as WorkflowExecutionRecord[] || []
+      const executionsData = workflowResult.data || []
 
       // Filter for reviews workflow executions only (WF065Cx7idbo2R9C)
       const reviewsWorkflowExecutions = executionsData.filter(exec => exec.workflow_id === 'WF065Cx7idbo2R9C')

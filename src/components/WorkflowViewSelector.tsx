@@ -1,4 +1,4 @@
-import React from 'react'
+// react import not needed in React 17+ with new JSX transform
 
 interface WorkflowViewSelectorProps {
   workflowSelector: 'movies' | 'reviews'

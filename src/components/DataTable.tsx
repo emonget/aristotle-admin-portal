@@ -9,7 +9,7 @@ interface DataTableProps {
 export function DataTable({ tableName }: DataTableProps) {
   const [result, setResult] = useState<QueryResult>({ data: null, error: null, isLoading: true })
   const [columns, setColumns] = useState<string[]>([])
-  const [connectionStatus, setConnectionStatus] = useState<'testing' | 'connected' | 'failed'>('testing')
+  const [connectionStatus] = useState<'testing' | 'connected' | 'failed'>('testing')
   const [refreshTrigger, setRefreshTrigger] = useState(0)
 
   // Test connection on mount
