@@ -2,7 +2,7 @@ import { createClient } from '@supabase/supabase-js'
 
 // Environment variables for Supabase connection
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+const supabaseKey = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
 // Validate environment variables
 if (!supabaseUrl) {
@@ -10,7 +10,7 @@ if (!supabaseUrl) {
 }
 
 if (!supabaseKey) {
-  throw new Error('Missing VITE_SUPABASE_ANON_KEY environment variable')
+  throw new Error('Missing VITE_SUPABASE_PUBLISHABLE_KEY environment variable')
 }
 
 // Create Supabase client instance
