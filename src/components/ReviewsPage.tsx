@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { ItemsList } from './ItemsList'
 import { ViewSelector } from './ViewSelector'
 import { ReviewsList } from './ReviewsList'
-import { ReviewsFromSource } from './ReviewsFromSource'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
@@ -84,9 +83,9 @@ export function ReviewsPage() {
         {/* Reviews Column */}
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden lg:flex-1 max-h-full">
           {itemsSelector === 'movies' ? (
-            <ReviewsList selectedMovie={selectedMovie} />
+            <ReviewsList selectedMovie={selectedMovie} displayMode="movie" />
           ) : (
-            <ReviewsFromSource selectedSource={selectedSource} />
+            <ReviewsList selectedSource={selectedSource} displayMode="source" />
           )}
         </div>
       </div>
