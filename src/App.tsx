@@ -18,7 +18,7 @@ function App() {
           <div className="relative bg-white dark:bg-gray-800 rounded-lg shadow p-6 flex items-center justify-between">
             <NavMenu />
             <h1 className="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl font-bold text-gray-900 dark:text-gray-100">
-              Aristotle Admin Portal
+              Reviews Admin Portal
             </h1>
             <ThemeToggle />
           </div>
