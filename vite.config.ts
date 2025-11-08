@@ -5,7 +5,7 @@ import path from 'path'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/aristotle-admin-portal/',
+  base: '/reviews-admin-portal/',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

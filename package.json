@@ -2,7 +2,7 @@
   "name": "aristotle-admin-portal",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://emonget.github.io/aristotle-admin-portal/",
+  "homepage": "https://emonget.github.io/reviews-admin-portal/",
   "type": "module",
   "scripts": {
     "dev": "vite",
