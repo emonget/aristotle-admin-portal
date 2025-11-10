@@ -21,10 +21,8 @@ interface ItemsListProps {
 }
 
 export function ItemsList({ isLoading, error, itemsSelector, movies, onMovieSelect, selectedMovieId, onSourceSelect, selectedSourceId }: ItemsListProps) {
-  const [sources, setSources] = useState<ReviewSource[]>([])
   const [allSources, setAllSources] = useState<ReviewSource[]>([])
   const [totalReviews, setTotalReviews] = useState<number>(0)
-  const [totalUniqueSources, setTotalUniqueSources] = useState<number>(0)
   const [sourceStats, setSourceStats] = useState<{ totalDomains: number, eq1: number, r2_4: number, r5_9: number, r10p: number }>({ totalDomains: 0, eq1: 0, r2_4: 0, r5_9: 0, r10p: 0 })
   const [selectedCategory, setSelectedCategory] = useState<'all' | 'eq1' | 'r2_4' | 'r5_9' | 'r10p'>('all')
   
@@ -80,7 +78,6 @@ export function ItemsList({ isLoading, error, itemsSelector, movies, onMovieSele
           })
 
           // Set total unique sources count
-          setTotalUniqueSources(domainCount.size)
 
           // Compute stats across ALL domains (not just displayed slice)
           let eq1 = 0
@@ -104,7 +101,6 @@ export function ItemsList({ isLoading, error, itemsSelector, movies, onMovieSele
             .sort((a, b) => b.count - a.count)
 
           setAllSources(sourceData)
-          setSources(sourceData.slice(0, 100)) // Display top 100 by default
         }
       } catch (err) {
         console.error('Failed to fetch sources:', err)
