@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
 
@@ -30,6 +31,7 @@ export function ReviewsList({
   const [movies, setMovies] = useState<DatabaseRecord[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const navigate = useNavigate()
 
   // Load movies data on mount for movie name lookups when in movie mode
   useEffect(() => {
@@ -304,16 +306,16 @@ export function ReviewsList({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                // TODO: Implement review content download functionality
-                                console.log('Download review content for ID:', review.review_id);
+                                navigate(`/capture/${review.review_id}`);
                               }}
-                              className="flex items-center space-x-1 px-2 py-1 text-xs text-green-600 dark:text-green-400 hover:text-green-800 dark:hover:text-green-300 bg-green-50 dark:bg-green-900/20 hover:bg-green-100 dark:hover:bg-green-900/30 rounded transition-colors"
-                              title="Download review content"
+                              className="flex items-center space-x-1 px-2 py-1 text-xs text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 bg-orange-50 dark:bg-orange-900/20 hover:bg-orange-100 dark:hover:bg-orange-900/30 rounded transition-colors"
+                              title="View review content"
                             >
                               <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                               </svg>
-                              <span>Download</span>
+                              <span>View</span>
                             </button>
                           </div>
                         </div>

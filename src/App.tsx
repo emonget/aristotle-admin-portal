@@ -33,7 +33,7 @@ function App() {
             <Route path="/workflows" element={<WorkflowsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/reporting" element={<ReportsPage />} />
-            <Route path="/capture" element={<CapturePage />} />
+            <Route path="/capture/:review_id" element={<CapturePage />} />
           </Routes>
         </div>
       </div>
