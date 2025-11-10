@@ -1,13 +1,9 @@
 import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
+import type { Database } from '@/types/database'
+import { WorkflowType } from '@/types/datamodel'
 
-interface WorkflowExecutionRecord {
-  exec_id: string
-  workflow_id: string
-  timestamp: string
-  metadata?: any
-  parent_exec_id?: string | null
-}
+type WorkflowExecutionRecord = Database['public']['Tables']['workflow_executions']['Row']
 
 export interface MoviesWorkflowExecution {
   id: string
@@ -44,7 +40,7 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
 
       // Get workflow executions for movies workflow
       const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
-        filters: { workflow_id: 'eTbtW2WLgxa6ZqXS' }, // Corrected workflow_id from debug output
+        filters: { workflow_type: WorkflowType.Movies },
         orderBy: 'timestamp',
         ascending: true
       })
@@ -69,12 +65,12 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
 
       for (let i = 0; i < executionsData.length; i++) {
         const exec = executionsData[i]
-        const execId = exec.exec_id
+        const execId = exec.id
         const runDate = new Date(exec.timestamp).toISOString().split('T')[0] // Extract date part
 
         // Count movies for this execution
         const moviesResult = await getTableData<{ ems_id: string }>('movies', {
-          filters: { workflow_exec_id: execId },
+          filters: { workflow_exec_ref: execId },
           select: 'ems_id'
         })
 
@@ -131,6 +127,7 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
 
       // Get ALL workflow executions to identify parent reviews workflows
       const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
+        filters: { workflow_type: WorkflowType.Reviews },
         orderBy: 'timestamp',
         ascending: true
       })
@@ -141,14 +138,10 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
 
       const executionsData = workflowResult.data || []
 
-      // Filter for reviews workflow executions only (WF065Cx7idbo2R9C)
-      const reviewsWorkflowExecutions = executionsData.filter(exec => exec.workflow_id === 'WF065Cx7idbo2R9C')
-
-      // Filter out sub-workflows - only keep parent workflow executions (no parent_exec_id)
-      const parentWorkflows = reviewsWorkflowExecutions.filter(exec => !exec.parent_exec_id)
+      // Filter out sub-workflows - only keep parent workflow executions (no parent_exec_ref)
+      const parentWorkflows = executionsData.filter(exec => !exec.parent_exec_ref)
 
       console.log(`🔍 DEBUG: All executions: ${executionsData.length}`)
-      console.log(`🔍 DEBUG: Reviews workflow executions: ${reviewsWorkflowExecutions.length}`)
       console.log(`🔍 DEBUG: Parent reviews workflows: ${parentWorkflows.length}`)
 
       if (parentWorkflows.length === 0) {
@@ -159,7 +152,7 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
 
       // Create simplified workflow executions - counting will be done on-demand when a workflow is selected
       const reviewsWorkflowData: ReviewsWorkflowExecution[] = parentWorkflows.map(exec => ({
-        id: exec.exec_id,
+        id: exec.id,
         runDate: new Date(exec.timestamp).toISOString().split('T')[0],
         totalReviews: 0, // Placeholder - will be calculated when needed
         deltaReviews: 0  // Placeholder - will be calculated when needed

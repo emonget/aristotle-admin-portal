@@ -1,17 +1,4 @@
-
-interface MoviesWorkflowExecution {
-  id: string
-  runDate: string
-  totalMovies: number
-  deltaMovies: number
-}
-
-interface ReviewsWorkflowExecution {
-  id: string
-  runDate: string
-  totalReviews: number
-  deltaReviews: number
-}
+import type { MoviesWorkflowExecution, ReviewsWorkflowExecution } from '@/hooks/useWorkflowData'
 
 interface WorkflowListProps {
   workflows: MoviesWorkflowExecution[] | ReviewsWorkflowExecution[]

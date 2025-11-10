@@ -1,22 +1,9 @@
 import { useState } from 'react'
 import { useMoviesWorkflowData, useReviewsWorkflowData } from '@/hooks/useWorkflowData'
+import type { MoviesWorkflowExecution, ReviewsWorkflowExecution } from '@/hooks/useWorkflowData'
 import { WorkflowViewSelector } from './WorkflowViewSelector'
 import { WorkflowList } from './WorkflowList'
 import { WorkflowItems } from './WorkflowItems'
-
-interface MoviesWorkflowExecution {
-  id: string
-  runDate: string
-  totalMovies: number
-  deltaMovies: number
-}
-
-interface ReviewsWorkflowExecution {
-  id: string
-  runDate: string
-  totalReviews: number
-  deltaReviews: number
-}
 
 type SelectedWorkflow = MoviesWorkflowExecution | ReviewsWorkflowExecution | null
 

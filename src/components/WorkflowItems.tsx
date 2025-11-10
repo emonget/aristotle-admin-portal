@@ -1,20 +1,8 @@
 import { useEffect, useState } from 'react'
 import { getTableData } from '@/services/database'
 import type { DatabaseRecord } from '@/types/database'
-
-interface MoviesWorkflowExecution {
-  id: string
-  runDate: string
-  totalMovies: number
-  deltaMovies: number
-}
-
-interface ReviewsWorkflowExecution {
-  id: string
-  runDate: string
-  totalReviews: number
-  deltaReviews: number
-}
+import type { MoviesWorkflowExecution, ReviewsWorkflowExecution } from '@/hooks/useWorkflowData'
+import { WorkflowType } from '@/types/datamodel'
 
 interface WorkflowItemsProps {
   selectedWorkflow?: MoviesWorkflowExecution | ReviewsWorkflowExecution
@@ -52,8 +40,8 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
         }
 
         if (workflowType === 'movies') {
-          // Movies workflows are straightforward - fetch directly by workflow_exec_id
-          const filters = { workflow_exec_id: selectedWorkflow.id }
+          // Movies workflows are straightforward - fetch directly by workflow_exec_ref
+          const filters = { workflow_exec_ref: selectedWorkflow.id }
           const result = await getTableData(workflowType, { filters })
 
           if (result.error) {
@@ -72,8 +60,8 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
 
           // First, get all sub-workflow executions spawned by this parent
           const subWorkflowResult = await getTableData('workflow_executions', {
-            filters: { workflow_id: 'cPANQaWH3eoCy3FZ', parent_exec_id: selectedWorkflow.id },
-            select: 'exec_id'
+            filters: { workflow_type: WorkflowType.MovieReviews, parent_exec_ref: selectedWorkflow.id },
+            select: 'id'
           })
 
           if (subWorkflowResult.error) {
@@ -83,8 +71,8 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
             return
           }
 
-          const subWorkflows = (subWorkflowResult.data as unknown as { exec_id: string }[]) || []
-          const subExecIds = subWorkflows.map(sw => sw.exec_id)
+          const subWorkflows = (subWorkflowResult.data as unknown as { id: string }[]) || []
+          const subExecIds = subWorkflows.map(sw => sw.id)
 
           console.log(`🔍 Found ${subWorkflows.length} sub-workflows for parent ${selectedWorkflow.id}:`, subExecIds)
 
@@ -99,7 +87,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           for (const subExecId of subExecIds) {
             console.log(`🔍 Fetching reviews for sub-workflow: ${subExecId}`)
             const reviewsResult = await getTableData('reviews', {
-              filters: { workflow_exec_id: subExecId }
+              filters: { workflow_exec_ref: subExecId }
             })
 
             if (reviewsResult.error) {
