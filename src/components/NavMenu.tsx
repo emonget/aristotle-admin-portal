@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { Clapperboard, Settings, FileText, BarChart3, ChevronDown } from 'lucide-react'
+import { Clapperboard, Settings, FileText, BarChart3, Camera, ChevronDown } from 'lucide-react'
 
 export function NavMenu() {
   const navigate = useNavigate()
@@ -12,6 +12,7 @@ export function NavMenu() {
     { path: '/workflows', name: 'Workflows', title: 'Workflows', icon: Settings },
     { path: '/analytics', name: 'Analytics', title: 'Analytics', icon: BarChart3 },
     { path: '/reporting', name: 'Reporting', title: 'Reporting', icon: FileText },
+    { path: '/capture', name: 'Capture', title: 'Capture', icon: Camera },
   ]
 
   const currentView = views.find(view => view.path === location.pathname) || views[0]

@@ -4,6 +4,7 @@ import { ReviewsPage } from './components/ReviewsPage'
 import { WorkflowsPage } from './components/WorkflowsPage'
 import { AnalyticsPage } from './components/AnalyticsPage'
 import { ReportsPage } from './components/ReportsPage'
+import { CapturePage } from './components/CapturePage'
 import { ThemeToggle } from './components/ThemeToggle'
 import { NavMenu } from './components/NavMenu'
 import { ThemeProvider } from './contexts/theme'
@@ -32,6 +33,7 @@ function App() {
             <Route path="/workflows" element={<WorkflowsPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/reporting" element={<ReportsPage />} />
+            <Route path="/capture" element={<CapturePage />} />
           </Routes>
         </div>
       </div>
