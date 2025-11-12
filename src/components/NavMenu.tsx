@@ -48,24 +48,18 @@ export function NavMenu() {
               <button
                 key={view.path}
                 onClick={() => {
-                  if (view.name === 'Capture') return;
                   navigate(view.path)
                   setIsDropdownOpen(false)
                 }}
                 className={`w-full flex items-center gap-3 px-4 py-3 transition-colors text-left ${
-                  location.pathname.startsWith(view.path) && view.name !== 'Capture'
+                  location.pathname.startsWith(view.path)
                     ? 'bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300'
-                    : view.name === 'Capture'
-                    ? 'text-gray-400 dark:text-gray-500 cursor-not-allowed'
                     : 'text-gray-900 dark:text-gray-100 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
-                disabled={view.name === 'Capture'}
               >
                 <view.icon className={`w-5 h-5 ${
-                  location.pathname.startsWith(view.path) && view.name !== 'Capture'
+                  location.pathname.startsWith(view.path)
                     ? 'text-blue-700 dark:text-blue-300'
-                    : view.name === 'Capture'
-                    ? 'text-gray-400 dark:text-gray-500'
                     : 'text-gray-600 dark:text-gray-300'
                 }`} />
                 <span>{view.name}</span>
