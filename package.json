@@ -1,8 +1,8 @@
 {
-  "name": "reviews-admin-portal",
+  "name": "digest-admin-portal",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://emonget.github.io/reviews-admin-portal/",
+  "homepage": "https://emonget.github.io/digest-admin-portal/",
   "type": "module",
   "scripts": {
     "dev": "vite",

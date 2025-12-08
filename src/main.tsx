@@ -5,7 +5,7 @@ import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter basename="/reviews-admin-portal">
+  <BrowserRouter basename="/digest-admin-portal">
     <StrictMode>
       <App />
     </StrictMode>
