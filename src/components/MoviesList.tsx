@@ -10,7 +10,7 @@ interface MoviesListProps {
   error?: string | null
 }
 
-export function MoviesList({ movies: externalMovies, isLoading, error }: MoviesListProps) {
+export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSelect, isLoading, error }: MoviesListProps) {
   const [movies, setMovies] = useState<DatabaseRecord[]>(externalMovies || [])
   const [internalLoading, setInternalLoading] = useState(isLoading !== undefined ? false : true)
   const [reviewsCount, setReviewsCount] = useState<{ [key: string]: number }>({})
@@ -65,6 +65,10 @@ export function MoviesList({ movies: externalMovies, isLoading, error }: MoviesL
     fetchReviewCounts()
   }, [movies])
 
+  const handleMovieClick = (movie: DatabaseRecord) => {
+    onMovieSelect?.(movie)
+  }
+
   if (actualLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -107,7 +111,10 @@ export function MoviesList({ movies: externalMovies, isLoading, error }: MoviesL
               {movies.map((movie) => (
                 <tr
                   key={movie.ems_id as string}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
+                  onClick={() => handleMovieClick(movie)}
+                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
+                    selectedMovieId === movie.ems_id ? 'bg-blue-50 dark:bg-blue-900/30 border-l-4 border-l-blue-500' : ''
+                  }`}
                 >
                   <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs truncate">
                     <div title={movie.title as string}>

@@ -20,12 +20,14 @@ interface ReviewsListProps {
   selectedMovie?: DatabaseRecord | null
   selectedSource?: ReviewSource | null
   displayMode?: 'movie' | 'source' // 'movie' shows movie title, 'source' shows domain
+  showHeader?: boolean
 }
 
 export function ReviewsList({ 
   selectedMovie, 
   selectedSource, 
-  displayMode = 'movie' 
+  displayMode = 'movie',
+  showHeader = true
 }: ReviewsListProps) {
   const [reviews, setReviews] = useState<ReviewItem[]>([])
   const [movies, setMovies] = useState<DatabaseRecord[]>([])
@@ -189,11 +191,13 @@ export function ReviewsList({
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
-        <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
-          {getHeaderTitle()}
-        </h3>
-      </div>
+      {showHeader && (
+        <div className="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-b border-gray-200 dark:border-gray-600">
+          <h3 className="font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            {getHeaderTitle()}
+          </h3>
+        </div>
+      )}
 
       {/* Content */}
       {!hasSelection ? (
