@@ -5,7 +5,7 @@ import './index.css'
 import App from './App.tsx'
 
 createRoot(document.getElementById('root')!).render(
-  <BrowserRouter basename="/digest-admin-portal">
+  <BrowserRouter basename={`/${import.meta.env.VITE_PROJECT_NAME}`}>
     <StrictMode>
       <App />
     </StrictMode>
