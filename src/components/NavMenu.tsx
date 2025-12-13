@@ -8,7 +8,7 @@ export function NavMenu() {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
 
   const views = [
-    { path: '/reviews', name: 'Reviews', title: 'Reviews', icon: Clapperboard },
+    { path: '/movies', name: 'Movies', title: 'Movies', icon: Clapperboard },
     { path: '/workflows', name: 'Workflows', title: 'Workflows', icon: Settings },
     { path: '/analytics', name: 'Analytics', title: 'Analytics', icon: BarChart3 },
     { path: '/reporting', name: 'Reporting', title: 'Reporting', icon: FileText },

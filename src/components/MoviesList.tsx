@@ -10,8 +10,7 @@ interface MoviesListProps {
   error?: string | null
 }
 
-export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSelect, isLoading, error }: MoviesListProps) {
-  const [searchTerm, setSearchTerm] = useState('')
+export function MoviesList({ movies: externalMovies, isLoading, error }: MoviesListProps) {
   const [movies, setMovies] = useState<DatabaseRecord[]>(externalMovies || [])
   const [internalLoading, setInternalLoading] = useState(isLoading !== undefined ? false : true)
   const [reviewsCount, setReviewsCount] = useState<{ [key: string]: number }>({})
@@ -66,26 +65,6 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
     fetchReviewCounts()
   }, [movies])
 
-  // Filter movies based on search term
-  const filteredMovies = useMemo(() => {
-    if (!searchTerm) return movies
-    return movies.filter(movie =>
-      movie.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      movie.ems_id?.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  }, [movies, searchTerm])
-
-  const displayedMovies = filteredMovies
-
-  const handleMovieClick = (movie: DatabaseRecord) => {
-    onMovieSelect?.(movie)
-  }
-
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return '-'
-    return new Date(dateStr).toLocaleDateString()
-  }
-
   if (actualLoading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -106,27 +85,11 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
 
   return (
     <div className="h-full flex flex-col">
-      {/* Header - removed "Movies" title, keeping only search */}
-      <div className="px-6 pt-0 pb-2">
-        {/* Search */}
-        <div className="mb-2">
-        <input
-          type="text"
-          placeholder="Search by title or EMS ID..."
-          value={searchTerm}
-          onChange={(e) => {
-            setSearchTerm(e.target.value)
-          }}
-          className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
-        />
-      </div>
-    </div>
-
     {/* Table */}
       <div className="flex-1 overflow-auto">
-        {filteredMovies.length === 0 ? (
+        {movies.length === 0 ? (
           <div className="px-6 py-8 text-center text-gray-500 dark:text-gray-400">
-            <p>{searchTerm ? 'No movies found matching your search.' : 'No movies available.'}</p>
+            <p>No movies available.</p>
           </div>
         ) : (
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-600">
@@ -136,38 +99,23 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
                   Title
                 </th>
                 <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  EMS ID
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
                   Review Count
-                </th>
-                <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
-                  Fetch Date
                 </th>
               </tr>
             </thead>
             <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
-              {displayedMovies.map((movie) => (
+              {movies.map((movie) => (
                 <tr
                   key={movie.ems_id as string}
-                  onClick={() => handleMovieClick(movie)}
-                  className={`cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 ${
-                    selectedMovieId === movie.ems_id ? 'bg-blue-50 dark:bg-blue-900/30 border-l-4 border-l-blue-500' : ''
-                  }`}
+                  className="hover:bg-gray-50 dark:hover:bg-gray-700"
                 >
                   <td className="px-4 py-3 text-sm font-medium text-gray-900 dark:text-gray-100 max-w-xs truncate">
                     <div title={movie.title as string}>
                       {movie.title as string}
                     </div>
                   </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 font-mono">
-                    {(movie.ems_id as string)?.slice(-8)}...
-                  </td>
                   <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                     {reviewsCount[movie.ems_id as string] || 0}
-                  </td>
-                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                    {formatDate(movie.fetched_at as string)}
                   </td>
                 </tr>
               ))}
@@ -177,12 +125,11 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
       </div>
 
       {/* Footer stats */}
-      {/* <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600">
+      <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex-shrink-0">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           {movies.length} {movies.length === 1 ? 'movie' : 'movies'} • {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0)} {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0) === 1 ? 'review' : 'reviews'} total
-          {searchTerm && ` (showing ${filteredMovies.length} filtered)`}
         </p>
-      </div>*/}
+      </div>
     </div>
   )
 }
