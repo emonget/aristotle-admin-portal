@@ -1,14 +1,9 @@
 import { useMemo, useState } from 'react'
 import { useReviewSelection } from '@/hooks/useReviewSelection'
 import { SearchComponent } from './SearchComponent'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
-type ReviewItem = DatabaseRecord & {
-  review_id: string
-  data: any
-  fetched_at: string
-  movie_id: string
-}
+type ReviewItem = Tables<'reviews'>
 
 export function CapturePage() {
   const [selectedReview, setSelectedReview] = useState<ReviewItem | null>(null)
@@ -42,7 +37,7 @@ export function CapturePage() {
     if (selectedMovie) {
       return allReviews.filter(
         (review) => review.movie_id === selectedMovie.ems_id
-      ) as ReviewItem[]
+      )
     }
     if (selectedSource) {
       return allReviews.filter((review) => {
@@ -58,7 +53,7 @@ export function CapturePage() {
         } catch (urlError) {
           return false
         }
-      }) as ReviewItem[]
+      })
     }
     return []
   }, [allReviews, selectedMovie, selectedSource])
@@ -102,7 +97,7 @@ export function CapturePage() {
                           className={`px-6 py-4 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer ${selectedReview?.review_id === review.review_id ? 'bg-gray-100 dark:bg-gray-700' : ''}`}
                       >
                           <p className="text-sm font-medium text-gray-900 dark:text-gray-100">
-                              {review.data?.criticName || 'Unknown Critic'}
+                              {(review.data as any)?.criticName || 'Unknown Critic'}
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                               ID: {review.review_id}
@@ -154,7 +149,7 @@ export function CapturePage() {
             <div className="flex-1 overflow-y-auto p-6">
               {activeTab === 'content' && (
                 <div>
-                  <h2 className="text-xl font-bold mb-4">{selectedReview.data?.title || 'Review Content'}</h2>
+                  <h2 className="text-xl font-bold mb-4">{(selectedReview.data as any)?.title || 'Review Content'}</h2>
                   <pre className="whitespace-pre-wrap text-sm text-gray-800 dark:text-gray-200">
                     {JSON.stringify(selectedReview.data, null, 2)}
                   </pre>

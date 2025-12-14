@@ -1,8 +1,8 @@
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 interface SimpleMoviesListProps {
-  movies: DatabaseRecord[]
-  onMovieSelect: (movie: DatabaseRecord) => void
+  movies: Tables<'movies'>[]
+  onMovieSelect: (movie: Tables<'movies'>) => void
   reviewsCount: { [key: string]: number }
 }
 

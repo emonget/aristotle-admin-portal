@@ -2,23 +2,23 @@ import { MoviesList } from './MoviesList'
 import { ReviewsList } from './ReviewsList'
 import { useState, useEffect, useMemo } from 'react'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 export function MoviesPage() {
-  const [movies, setMovies] = useState<DatabaseRecord[]>([])
+  const [movies, setMovies] = useState<Tables<'movies'>[]>([])
   const [searchTerm, setSearchTerm] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   
   // Selection state
-  const [selectedMovie, setSelectedMovie] = useState<DatabaseRecord | null>(null)
+  const [selectedMovie, setSelectedMovie] = useState<Tables<'movies'> | null>(null)
   const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'digest'>('details')
 
   useEffect(() => {
     const fetchMovies = async () => {
       try {
         setIsLoading(true)
-        const result = await getTableData('movies')
+        const result = await getTableData<Tables<'movies'>>('movies')
         if (result.error) {
           setError(result.error.message)
         } else {
@@ -43,7 +43,7 @@ export function MoviesPage() {
     )
   }, [movies, searchTerm])
 
-  const handleMovieSelect = (movie: DatabaseRecord) => {
+  const handleMovieSelect = (movie: Tables<'movies'>) => {
     setSelectedMovie(movie)
     // Reset to details tab when a new movie is selected
     setActiveTab('details')

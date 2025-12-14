@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 import type { MoviesWorkflowExecution, ReviewsWorkflowExecution } from '@/hooks/useWorkflowData'
 import { WorkflowType } from '@/types/datamodel'
 
@@ -9,11 +9,13 @@ interface WorkflowItemsProps {
   workflowType: 'movies' | 'reviews'
 }
 
+type WorkflowItem = Tables<'movies'> | Tables<'reviews'>
+
 export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsProps) {
-  const [items, setItems] = useState<DatabaseRecord[]>([])
+  const [items, setItems] = useState<WorkflowItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [movies, setMovies] = useState<DatabaseRecord[]>([])
+  const [movies, setMovies] = useState<Tables<'movies'>[]>([])
 
   useEffect(() => {
     const fetchWorkflowItems = async () => {
@@ -27,7 +29,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
         setError(null)
 
         // First fetch movies for lookup
-        const moviesResult = await getTableData('movies', {
+        const moviesResult = await getTableData<Tables<'movies'>>('movies', {
           select: 'ems_id,title'
         })
 
@@ -42,7 +44,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
         if (workflowType === 'movies') {
           // Movies workflows are straightforward - fetch directly by workflow_exec_ref
           const filters = { workflow_exec_ref: selectedWorkflow.id }
-          const result = await getTableData(workflowType, { filters })
+          const result = await getTableData<Tables<'movies'>>(workflowType, { filters })
 
           if (result.error) {
             setError(result.error.message || 'Failed to fetch workflow items')
@@ -59,7 +61,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           console.log(`🔍 DEBUG: Selected workflow object:`, selectedWorkflow)
 
           // First, get all sub-workflow executions spawned by this parent
-          const subWorkflowResult = await getTableData('workflow_executions', {
+          const subWorkflowResult = await getTableData<Tables<'batches'>>('batches', {
             filters: { workflow_type: WorkflowType.MovieReviews, parent_exec_ref: selectedWorkflow.id },
             select: 'id'
           })
@@ -82,11 +84,11 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           }
 
           // Fetch reviews for each sub-workflow
-          const allReviews: DatabaseRecord[] = []
+          const allReviews: Tables<'reviews'>[] = []
 
           for (const subExecId of subExecIds) {
             console.log(`🔍 Fetching reviews for sub-workflow: ${subExecId}`)
-            const reviewsResult = await getTableData('reviews', {
+            const reviewsResult = await getTableData<Tables<'reviews'>>('reviews', {
               filters: { workflow_exec_ref: subExecId }
             })
 
@@ -95,7 +97,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
               continue
             }
 
-            const subReviews = reviewsResult.data as DatabaseRecord[] || []
+            const subReviews = reviewsResult.data || []
             console.log(`🔍 Sub-workflow ${subExecId} has ${subReviews.length} reviews`)
             allReviews.push(...subReviews)
           }
@@ -171,7 +173,7 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
             </div>
           ) : (
             <div className="divide-y divide-gray-200 dark:divide-gray-600">
-              {items.map((movie, index) => (
+              {(items as Tables<'movies'>[]).map((movie, index) => (
                 <div key={movie.ems_id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -226,10 +228,11 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
           <div className="p-8 text-center text-gray-500">
             <p>No reviews were added during this workflow execution</p>
           </div>
-        ) : (
-          <div className="divide-y divide-gray-200 dark:divide-gray-600">
-            {items.map((review, index) => (
-              <div key={review.review_id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+                  ) : (
+                    <div className="divide-y divide-gray-200 dark:divide-gray-600">
+                      {(items as Tables<'reviews'>[]).map((review, index) => (
+                        <div key={review.review_id} className="p-4 hover:bg-gray-50 dark:hover:bg-gray-700">
+        
                 <div className="space-y-3">
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
@@ -252,23 +255,23 @@ export function WorkflowItems({ selectedWorkflow, workflowType }: WorkflowItemsP
                     </div>
                   </div>
 
-                  {review.content && (
+                  {(review.data as any)?.content && (
                     <div className="bg-gray-50 dark:bg-gray-800 p-3 rounded-md">
                       <p className="text-sm text-gray-700 dark:text-gray-300 italic leading-relaxed">
-                        "{review.content.substring(0, 300)}{review.content.length > 300 ? '...' : ''}"
+                        "{(review.data as any).content.substring(0, 300)}{(review.data as any).content.length > 300 ? '...' : ''}"
                       </p>
                     </div>
                   )}
 
-                  {(review.reviewUrl || review.publicationUrl) && (
+                  {((review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl) && (
                     <div className="text-xs text-blue-600 dark:text-blue-400">
                       <a
-                        href={review.reviewUrl || review.publicationUrl}
+                        href={(review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="hover:underline"
                       >
-                        {review.reviewUrl || review.publicationUrl}
+                        {(review.data as any)?.reviewUrl || (review.data as any)?.publicationUrl}
                       </a>
                     </div>
                   )}

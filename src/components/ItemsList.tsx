@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { MoviesList } from './MoviesList'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 interface ReviewSource {
   domain: string
@@ -13,8 +13,8 @@ interface ItemsListProps {
   isLoading: boolean
   error: string | null
   itemsSelector: 'movies' | 'sources'
-  movies?: DatabaseRecord[]
-  onMovieSelect?: (movie: DatabaseRecord) => void
+  movies?: Tables<'movies'>[]
+  onMovieSelect?: (movie: Tables<'movies'>) => void
   selectedMovieId?: string
   onSourceSelect?: (source: ReviewSource) => void
   selectedSourceId?: string
@@ -32,7 +32,7 @@ export function ItemsList({ isLoading, error, itemsSelector, movies, onMovieSele
       if (itemsSelector !== 'movies') return
 
       try {
-        const result = await getTableData('reviews')
+        const result = await getTableData<Tables<'reviews'>>('reviews')
         if (result.data) {
           setTotalReviews(result.data.length)
         }
@@ -46,14 +46,14 @@ export function ItemsList({ isLoading, error, itemsSelector, movies, onMovieSele
       if (itemsSelector !== 'sources') return
 
       try {
-        const result = await getTableData('reviews')
+        const result = await getTableData<Tables<'reviews'>>('reviews')
         if (result.data) {
           setTotalReviews(result.data.length) // Also update total reviews for sources view
 
           const domainCount = new Map<string, { count: number, publicationName: string }>()
 
-          result.data.forEach((review: DatabaseRecord) => {
-            const reviewData = review.data
+          result.data.forEach((review) => {
+            const reviewData = review.data as any
             const reviewUrl = reviewData.reviewUrl || reviewData.publicationUrl
             if (reviewUrl) {
               try {

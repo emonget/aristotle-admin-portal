@@ -3,7 +3,7 @@ import { getTableData } from '@/services/database'
 import type { Database } from '@/types/database'
 import { WorkflowType } from '@/types/datamodel'
 
-type WorkflowExecutionRecord = Database['public']['Tables']['workflow_executions']['Row']
+type WorkflowExecutionRecord = Database['public']['Tables']['batches']['Row']
 
 export interface MoviesWorkflowExecution {
   id: string
@@ -39,7 +39,7 @@ export function useMoviesWorkflowData(): WorkflowDataHook<MoviesWorkflowExecutio
       console.log('🎬 FETCHING MOVIES WORKFLOW DATA...')
 
       // Get workflow executions for movies workflow
-      const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
+      const workflowResult = await getTableData<WorkflowExecutionRecord>('batches', {
         filters: { workflow_type: WorkflowType.Movies },
         orderBy: 'timestamp',
         ascending: true
@@ -126,7 +126,7 @@ export function useReviewsWorkflowData(): WorkflowDataHook<ReviewsWorkflowExecut
       console.log('🔍 FETCHING REVIEWS WORKFLOW EXECUTIONS...')
 
       // Get ALL workflow executions to identify parent reviews workflows
-      const workflowResult = await getTableData<WorkflowExecutionRecord>('workflow_executions', {
+      const workflowResult = await getTableData<WorkflowExecutionRecord>('batches', {
         filters: { workflow_type: WorkflowType.Reviews },
         orderBy: 'timestamp',
         ascending: true

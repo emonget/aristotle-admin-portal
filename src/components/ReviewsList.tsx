@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 interface ReviewSource {
   domain: string
@@ -9,15 +9,12 @@ interface ReviewSource {
   count: number
 }
 
-type ReviewItem = DatabaseRecord & {
-  review_id: string
-  data: any
-  fetched_at: string
-  movie_id: string
-}
+// Extend Tables<'reviews'> to include potential joined fields or data properties if needed
+// For now, we'll just alias it, but keep the name for minimal churn
+type ReviewItem = Tables<'reviews'>
 
 interface ReviewsListProps {
-  selectedMovie?: DatabaseRecord | null
+  selectedMovie?: Tables<'movies'> | null
   selectedSource?: ReviewSource | null
   displayMode?: 'movie' | 'source' // 'movie' shows movie title, 'source' shows domain
   showHeader?: boolean
@@ -30,7 +27,7 @@ export function ReviewsList({
   showHeader = true
 }: ReviewsListProps) {
   const [reviews, setReviews] = useState<ReviewItem[]>([])
-  const [movies, setMovies] = useState<DatabaseRecord[]>([])
+  const [movies, setMovies] = useState<Tables<'movies'>[]>([])
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const navigate = useNavigate()
@@ -39,7 +36,7 @@ export function ReviewsList({
   useEffect(() => {
     if (displayMode === 'movie') {
       const fetchMovies = async () => {
-        const result = await getTableData('movies')
+        const result = await getTableData<Tables<'movies'>>('movies')
         if (result.data) {
           setMovies(result.data)
         }
@@ -65,21 +62,21 @@ export function ReviewsList({
         setError(null)
 
         // Fetch reviews for the selected item
-        const result = await getTableData('reviews')
+        const result = await getTableData<Tables<'reviews'>>('reviews')
         if (result.error) {
           setError(result.error.message)
         } else {
-          let filteredReviews: DatabaseRecord[] = []
+          let filteredReviews: Tables<'reviews'>[] = []
 
           if (displayMode === 'movie') {
             // Filter reviews by movie_id
             filteredReviews = (result.data || []).filter(
-              (review: DatabaseRecord) => review.movie_id === selectedMovie!.ems_id
+              (review) => review.movie_id === selectedMovie!.ems_id
             )
           } else {
             // Filter reviews by domain (with safe URL parsing)
             filteredReviews = (result.data || []).filter(
-              (review: DatabaseRecord) => {
+              (review) => {
                 try {
                   const reviewData = review.data as any
                   const reviewUrl = reviewData?.reviewUrl || reviewData?.publicationUrl
@@ -98,7 +95,7 @@ export function ReviewsList({
           }
 
           // Sort by isTopCritic (top critics first) then by creation date (most recent first)
-          filteredReviews.sort((a: DatabaseRecord, b: DatabaseRecord) => {
+          filteredReviews.sort((a, b) => {
             const aData = a.data as any
             const bData = b.data as any
 
@@ -112,7 +109,7 @@ export function ReviewsList({
             return bDate - aDate
           })
 
-          setReviews(filteredReviews as ReviewItem[])
+          setReviews(filteredReviews)
         }
       } catch (err) {
         setError('Failed to fetch reviews')
@@ -124,7 +121,7 @@ export function ReviewsList({
     fetchReviews()
   }, [selectedMovie, selectedSource, displayMode])
 
-  const formatFetchDate = (dateString: string) => {
+  const formatFetchDate = (dateString: string | null) => {
     if (!dateString) return '-'
     const date = new Date(dateString)
     return date.toLocaleDateString()
@@ -153,10 +150,8 @@ export function ReviewsList({
 
   const getMovieTitle = (movieId: string) => {
     if (!movieId || !movies) return null
-    console.log('Looking for movie with ID:', movieId, 'in movies:', movies.slice(0, 2))
-    const movie = movies.find(m => (m.data as any)?.ems_id === movieId || m.ems_id === movieId)
-    console.log('Found movie:', movie)
-    return movie ? (movie.data as any)?.title : null
+    const movie = movies.find(m => m.ems_id === movieId)
+    return movie ? movie.title : null
   }
 
   const getItemTitle = (review: ReviewItem) => {
@@ -172,7 +167,7 @@ export function ReviewsList({
 
   const getHeaderTitle = () => {
     if (displayMode === 'movie') {
-      return selectedMovie ? `Reviews for ${(selectedMovie.data as any)?.title || 'Selected Movie'}` : 'Select a movie'
+      return selectedMovie ? `Reviews for ${selectedMovie.title || 'Selected Movie'}` : 'Select a movie'
     } else {
       return selectedSource ? `Reviews from ${selectedSource.domain}` : 'Select a source'
     }
@@ -266,7 +261,7 @@ export function ReviewsList({
                                 </div>
                                 <div className="flex items-center space-x-2">
                                   <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    on {formatFetchDate(review.fetched_at)}
+                                    on {formatFetchDate(review.created_at)}
                                   </span>
                                   {reviewData?.criticName && (
                                     <span className="text-xs text-gray-500 dark:text-gray-400">

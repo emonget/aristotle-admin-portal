@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { getTableData, getTableStructure, type QueryResult } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
 
 interface DataTableProps {
   tableName: string
@@ -156,7 +155,7 @@ export function DataTable({ tableName }: DataTableProps) {
                   </tr>
                 </thead>
                 <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-600">
-                  {result.data.map((record: DatabaseRecord, index: number) => (
+                  {result.data.map((record: any, index: number) => (
                     <tr key={record.id || index} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                       {columns.map((column) => (
                         <td key={column} className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">

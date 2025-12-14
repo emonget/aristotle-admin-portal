@@ -1,17 +1,17 @@
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 interface MoviesListProps {
-  movies?: DatabaseRecord[]
+  movies?: Tables<'movies'>[]
   selectedMovieId?: string
-  onMovieSelect?: (movie: DatabaseRecord) => void
+  onMovieSelect?: (movie: Tables<'movies'>) => void
   isLoading?: boolean
   error?: string | null
 }
 
 export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSelect, isLoading, error }: MoviesListProps) {
-  const [movies, setMovies] = useState<DatabaseRecord[]>(externalMovies || [])
+  const [movies, setMovies] = useState<Tables<'movies'>[]>(externalMovies || [])
   const [internalLoading, setInternalLoading] = useState(isLoading !== undefined ? false : true)
   const [reviewsCount, setReviewsCount] = useState<{ [key: string]: number }>({})
 
@@ -26,7 +26,7 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
       const fetchMovies = async () => {
         try {
           setInternalLoading(true)
-          const result = await getTableData('movies')
+          const result = await getTableData<Tables<'movies'>>('movies')
           if (!result.error && result.data) {
             setMovies(result.data)
           }
@@ -46,10 +46,10 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
       if (movies.length === 0) return
 
       try {
-        const result = await getTableData('reviews')
+        const result = await getTableData<Tables<'reviews'>>('reviews')
         if (!result.error && result.data) {
           const countMap: { [key: string]: number } = {}
-          result.data.forEach((review: DatabaseRecord) => {
+          result.data.forEach((review) => {
             const movieId = review.movie_id as string
             if (movieId) {
               countMap[movieId] = (countMap[movieId] || 0) + 1
@@ -65,7 +65,7 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
     fetchReviewCounts()
   }, [movies])
 
-  const handleMovieClick = (movie: DatabaseRecord) => {
+  const handleMovieClick = (movie: Tables<'movies'>) => {
     onMovieSelect?.(movie)
   }
 

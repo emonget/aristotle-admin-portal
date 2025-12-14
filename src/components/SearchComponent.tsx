@@ -3,13 +3,13 @@ import { SearchTypeSelector } from './SearchTypeSelector'
 import { Search } from 'lucide-react'
 import { SearchMoviesList } from './SearchMoviesList'
 import { SearchSourcesList } from './SearchSourcesList'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 import type { ReviewSource } from '@/hooks/useReviewSelection'
 
 interface SearchComponentProps {
-  movies: DatabaseRecord[]
+  movies: Tables<'movies'>[]
   sources: ReviewSource[]
-  onMovieSelect: (movie: DatabaseRecord) => void
+  onMovieSelect: (movie: Tables<'movies'>) => void
   onSourceSelect: (source: ReviewSource) => void
   reviewsCount: { [key: string]: number }
 }
@@ -23,7 +23,7 @@ export function SearchComponent({
 }: SearchComponentProps) {
   const [searchType, setSearchType] = useState<'movie' | 'source'>('movie')
   const [searchTerm, setSearchTerm] = useState('')
-  const [selectedItem, setSelectedItem] = useState<DatabaseRecord | ReviewSource | null>(null)
+  const [selectedItem, setSelectedItem] = useState<Tables<'movies'> | ReviewSource | null>(null)
   const [isDropdownOpen, setIsDropdownOpen] = useState(false)
   const searchInputRef = useRef<HTMLDivElement>(null) // Ref for the search input container
 
@@ -56,7 +56,7 @@ export function SearchComponent({
     }
   }, [])
 
-  const handleMovieSelect = (movie: DatabaseRecord) => {
+  const handleMovieSelect = (movie: Tables<'movies'>) => {
     onMovieSelect(movie)
     setSelectedItem(movie)
     setSearchTerm('')
@@ -78,7 +78,7 @@ export function SearchComponent({
 
   const getInputValue = () => {
     if (selectedItem) {
-      return searchType === 'movie' ? (selectedItem as DatabaseRecord).title as string : (selectedItem as ReviewSource).domain
+      return searchType === 'movie' ? (selectedItem as Tables<'movies'>).title as string : (selectedItem as ReviewSource).domain
     }
     return searchTerm
   }

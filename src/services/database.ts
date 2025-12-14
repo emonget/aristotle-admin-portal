@@ -1,7 +1,6 @@
 import { supabase } from '@/lib/supabase'
-import type { DatabaseRecord } from '@/types/database'
 
-export interface QueryResult<T = DatabaseRecord> {
+export interface QueryResult<T = any> {
   data: T[] | null
   error: Error | null
   isLoading: boolean
@@ -22,7 +21,7 @@ export interface DatabaseServiceOptions extends PaginationOptions {
 /**
  * Generic function to fetch data from any table
  */
-export async function getTableData<T = DatabaseRecord>(
+export async function getTableData<T = any>(
   tableName: string,
   options: DatabaseServiceOptions = {}
 ): Promise<QueryResult<T>> {

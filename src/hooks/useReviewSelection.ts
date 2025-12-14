@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getTableData } from '@/services/database'
-import type { DatabaseRecord } from '@/types/database'
+import type { Tables } from '@/types/database'
 
 export interface ReviewSource {
   domain: string
@@ -9,10 +9,10 @@ export interface ReviewSource {
 }
 
 export function useReviewSelection() {
-  const [movies, setMovies] = useState<DatabaseRecord[]>([])
+  const [movies, setMovies] = useState<Tables<'movies'>[]>([])
   const [sources, setSources] = useState<ReviewSource[]>([])
-  const [allReviews, setAllReviews] = useState<DatabaseRecord[]>([])
-  const [selectedMovie, setSelectedMovie] = useState<DatabaseRecord | null>(null)
+  const [allReviews, setAllReviews] = useState<Tables<'reviews'>[]>([])
+  const [selectedMovie, setSelectedMovie] = useState<Tables<'movies'> | null>(null)
   const [selectedSource, setSelectedSource] = useState<ReviewSource | null>(null)
   const [itemsSelector, setItemsSelector] = useState<'movies' | 'sources'>('movies')
   const [isLoading, setIsLoading] = useState(true)
@@ -23,8 +23,8 @@ export function useReviewSelection() {
       try {
         setIsLoading(true)
         const [moviesResult, reviewsResult] = await Promise.all([
-          getTableData('movies'),
-          getTableData('reviews'),
+          getTableData<Tables<'movies'>>('movies'),
+          getTableData<Tables<'reviews'>>('reviews'),
         ])
 
         if (moviesResult.error) {
@@ -38,8 +38,8 @@ export function useReviewSelection() {
         } else {
           setAllReviews(reviewsResult.data || [])
           const domainCount = new Map<string, { count: number, publicationName: string }>()
-          reviewsResult.data?.forEach((review: DatabaseRecord) => {
-            const reviewData = review.data
+          reviewsResult.data?.forEach((review) => {
+            const reviewData = review.data as any
             const reviewUrl = reviewData.reviewUrl || reviewData.publicationUrl
             if (reviewUrl) {
               try {
@@ -82,7 +82,7 @@ export function useReviewSelection() {
     fetchData()
   }, [])
 
-  const handleMovieSelect = (movie: DatabaseRecord) => {
+  const handleMovieSelect = (movie: Tables<'movies'>) => {
     setSelectedMovie(movie)
     setSelectedSource(null) // Clear source selection when selecting movie
   }
