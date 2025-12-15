@@ -87,6 +87,10 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
   }
 
 
+  const totalDisplayedReviews = movies.reduce((sum, movie) => {
+    return sum + (reviewsCount[movie.ems_id as string] || 0)
+  }, 0)
+
   return (
     <div className="h-full flex flex-col">
     {/* Table */}
@@ -134,7 +138,7 @@ export function MoviesList({ movies: externalMovies, selectedMovieId, onMovieSel
       {/* Footer stats */}
       <div className="px-6 py-3 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex-shrink-0">
         <p className="text-sm text-gray-600 dark:text-gray-400">
-          {movies.length} {movies.length === 1 ? 'movie' : 'movies'} • {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0)} {Object.values(reviewsCount).reduce((sum, count) => sum + count, 0) === 1 ? 'review' : 'reviews'} total
+          {movies.length} {movies.length === 1 ? 'movie' : 'movies'} • {totalDisplayedReviews} {totalDisplayedReviews === 1 ? 'review' : 'reviews'} total
         </p>
       </div>
     </div>
