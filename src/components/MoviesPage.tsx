@@ -1,6 +1,7 @@
 import { MoviesList } from './MoviesList'
 import { ReviewsList } from './ReviewsList'
 import { MovieDigestPanel } from './MovieDigestPanel'
+import { MovieBreakdownDigest } from './MovieBreakdownDigest'
 import { useState, useEffect, useMemo } from 'react'
 import { getTableData } from '@/services/database'
 import type { Tables } from '@/types/database'
@@ -13,7 +14,7 @@ export function MoviesPage() {
   
   // Selection state
   const [selectedMovie, setSelectedMovie] = useState<Tables<'movies'> | null>(null)
-  const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'digest'>('details')
+  const [activeTab, setActiveTab] = useState<'details' | 'reviews' | 'digest' | 'breakdown'>('details')
 
   useEffect(() => {
     const fetchMovies = async () => {
@@ -113,6 +114,16 @@ export function MoviesPage() {
               >
                 Digest
               </button>
+              <button
+                onClick={() => setActiveTab('breakdown')}
+                className={`px-6 py-3 text-sm font-medium transition-colors ${
+                  activeTab === 'breakdown'
+                    ? 'border-b-2 border-blue-500 text-blue-600 dark:text-blue-400'
+                    : 'text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200'
+                }`}
+              >
+                Breakdown
+              </button>
             </div>
 
             {/* Tab Content */}
@@ -149,6 +160,10 @@ export function MoviesPage() {
 
               {activeTab === 'digest' && (
                 <MovieDigestPanel movie={selectedMovie} />
+              )}
+              
+              {activeTab === 'breakdown' && (
+                <MovieBreakdownDigest movie={selectedMovie} />
               )}
             </div>
           </>
